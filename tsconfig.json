@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "incremental": true, 
+    "target": "es2020",          
+    "lib": ["DOM"],
+    "module": "commonjs",
+    "rootDir": "./src",
+    "moduleResolution": "node", 
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,  
+  }
+}
