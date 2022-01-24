@@ -14,7 +14,11 @@ Minesweeper is a game that is fast to play, where you have to think, deduct, and
 
 ## 4. Instructions
 
-## 5. Packages and dependencies
+## 5. Technologies 
+- **Node.js**
+- **GitHub Paeges**
+
+## 6. Packages and dependencies
 - **Typescript:** Suport for typescript
 - **Lodash:** JS utility library 
 - **Parcel:** Fast and easy server build
