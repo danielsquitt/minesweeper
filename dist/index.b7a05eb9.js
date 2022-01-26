@@ -519,13 +519,238 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"jeorp":[function(require,module,exports) {
+var _tile = require("./actors/Tile");
 window.onload = ()=>{
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    ctx.font = "30px Arial";
-    ctx.fillText("Hello World", 10, 50);
+    console.log("Start drawing");
+    const tile1 = new _tile.Tile({
+        x: 0,
+        y: 0
+    }, {
+        x: 200,
+        y: 200
+    });
+    const tile2 = new _tile.Tile({
+        x: 210,
+        y: 0
+    }, {
+        x: 200,
+        y: 200
+    });
+    tile2.over = true;
+    const tile3 = new _tile.Tile({
+        x: 420,
+        y: 0
+    }, {
+        x: 200,
+        y: 200
+    });
+    tile3.down = true;
+    const tile4 = new _tile.Tile({
+        x: 0,
+        y: 210
+    }, {
+        x: 200,
+        y: 200
+    });
+    tile4.flag = true;
+    const tile5 = new _tile.Tile({
+        x: 210,
+        y: 210
+    }, {
+        x: 200,
+        y: 200
+    });
+    tile5.flag = true;
+    tile5.over = true;
+    const tile6 = new _tile.Tile({
+        x: 420,
+        y: 210
+    }, {
+        x: 200,
+        y: 200
+    });
+    tile6.flag = true;
+    tile6.down = true;
+    const actors = [
+        tile1,
+        tile2,
+        tile3,
+        tile4,
+        tile5,
+        tile6
+    ];
+    let lastFrame = 0;
+    const render = (time)=>{
+        const delta = (time - lastFrame) / 1000;
+        lastFrame = time;
+        actors.forEach((e)=>{
+            ctx.save();
+            e.draw(delta, ctx);
+            ctx.restore();
+        });
+        window.requestAnimationFrame(render);
+    };
+    window.requestAnimationFrame(render);
 };
 
-},{}]},["lpcHr","jeorp"], "jeorp", "parcelRequire6f9e")
+},{"./actors/Tile":"hFULe"}],"hFULe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Tile", ()=>Tile
+);
+var _actor = require("./Actor");
+const imgTileUndiscover = require("../../assets/img/Cell.png");
+const imgTileUndiscoverOver = require("../../assets/img/CellOver.png");
+const imgTileUndiscoverDown = require("../../assets/img/CellDown.png");
+const imgTileFlag = require("../../assets/img/FlagButton.png");
+const imgTileFlagOver = require("../../assets/img/FlagButtonOver.png");
+const imgTileFlagDown = require("../../assets/img/FlagButtonDown.png");
+class Tile extends _actor.Actor {
+    constructor(initialPos, size){
+        super(initialPos);
+        this.size = size;
+        this.flag = false;
+        this.discovered = false;
+        this.over = false;
+        this.down = false;
+        this.img_undicover = new Image();
+        this.img_undicover.src = imgTileUndiscover;
+        this.img_undicoverOver = new Image();
+        this.img_undicoverOver.src = imgTileUndiscoverOver;
+        this.img_undicoverDown = new Image();
+        this.img_undicoverDown.src = imgTileUndiscoverDown;
+        this.img_flag = new Image();
+        this.img_flag.src = imgTileFlag;
+        this.img_flagOver = new Image();
+        this.img_flagOver.src = imgTileFlagOver;
+        this.img_flagDown = new Image();
+        this.img_flagDown.src = imgTileFlagDown;
+    }
+    draw(delta, ctx) {
+        if (this.discovered) return;
+        ctx.translate(this.position.x, this.position.y);
+        if (this.flag && !this.over) {
+            console.log("Type 1");
+            ctx.drawImage(this.img_flag, 0, 0, this.size.x, this.size.y);
+        } else if (this.flag && this.down) {
+            console.log("Type 2");
+            ctx.drawImage(this.img_flagDown, 0, 0, this.size.x, this.size.y);
+        } else if (this.flag && this.over) {
+            console.log("Type 3");
+            ctx.drawImage(this.img_flagOver, 0, 0, this.size.x, this.size.y);
+        } else if (!this.flag && !this.over) {
+            console.log("Type 4");
+            ctx.drawImage(this.img_undicover, 0, 0, this.size.x, this.size.y);
+        } else if (!this.flag && this.down) {
+            console.log("Type 5");
+            ctx.drawImage(this.img_undicoverDown, 0, 0, this.size.x, this.size.y);
+        } else if (!this.flag && this.over) {
+            console.log("Type 6");
+            ctx.drawImage(this.img_undicoverOver, 0, 0, this.size.x, this.size.y);
+        }
+    }
+}
+
+},{"./Actor":"6VSAG","../../assets/img/Cell.png":"9uzbs","../../assets/img/CellOver.png":"9pPTX","../../assets/img/FlagButton.png":"copb6","../../assets/img/FlagButtonOver.png":"ekSy0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../assets/img/CellDown.png":"6k1Ho","../../assets/img/FlagButtonDown.png":"8RRTP"}],"6VSAG":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Actor", ()=>Actor
+);
+class Actor {
+    constructor(position){
+        this.position = position;
+    }
+    update(delta) {
+    }
+    draw(delta, ctx) {
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"9uzbs":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('aNMIV') + "Cell.10e248f0.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {
+};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return '/';
+}
+function getBaseURL(url) {
+    return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ('' + url).match(/(https?|file|ftp):\/\/[^/]+/);
+    if (!matches) throw new Error('Origin not found');
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"9pPTX":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('aNMIV') + "CellOver.e9eb8f33.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"copb6":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('aNMIV') + "FlagButton.4f8d5c32.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"ekSy0":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('aNMIV') + "FlagButtonOver.c07bec27.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"6k1Ho":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('aNMIV') + "CellDown.4dcda378.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"8RRTP":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('aNMIV') + "FlagButtonDown.67ad23ee.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}]},["lpcHr","jeorp"], "jeorp", "parcelRequire6f9e")
 
 //# sourceMappingURL=index.b7a05eb9.js.map
