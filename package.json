@@ -4,8 +4,8 @@
   "scripts": {
     "dev": "parcel index.html",
     "build": "yarn run clean && yarn run ghbuild",
-    "ghbuild": "parcel build --dist-dir docs --public-url ./minesweeper index.html",
-    "clean": "rimraf docs dist .parcel-cache"
+    "ghbuild": "parcel build --dist-dir docs --public-url ./ index.html",
+    "clean": "rimraf docs dist"
   },
   "author": "Daniel Squittieri <danielsquitt@gmail.com>",
   "license": "MIT",
