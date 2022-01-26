@@ -10,19 +10,21 @@ assignees: ''
 ## **Date:**  
 Monday - Wednesday - Friday, February 1st, 2022
 
-## **Issues in progress**  
+## **Issues status**
+### **Issues in progress**  
 #04 Issue description
 #05 Issue description
 
-## **Ussues closed**  
+### **Issues closed**  
 #01 Issue description
 #02 Issue description
 
-## **Description of the tasks performed**  
-Overview of the tasks done since the las report
+## **Details**
+### **Description of the tasks performed**  
+Overview of the tasks done since the last report
 
-## **Complications**  
+### **Complications**  
 Description of the problems and solutions
 
-## **Comments**  
+### **Comments**  
 Comments
