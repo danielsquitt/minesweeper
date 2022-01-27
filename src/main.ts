@@ -1,4 +1,5 @@
 import { IActor } from "./actors/Actor";
+import { Map } from "./actors/Map";
 import { Tile } from "./actors/Tile";
 
 window.onload = () => {
@@ -6,6 +7,10 @@ window.onload = () => {
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   const actors: Array<IActor> = [];
+
+
+  let map = new Map({ x: 100, y: 100 }, { x: 7, y: 5 }, 5);
+
 
   let lastFrame = 0;
   const render = (time: number) => {
