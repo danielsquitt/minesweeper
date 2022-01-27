@@ -9,7 +9,7 @@ window.onload = () => {
   const actors: Array<IActor> = [];
 
 
-  let map = new Map({ x: 100, y: 100 }, { x: 7, y: 5 }, 5);
+  let map = new Map({ x: 100, y: 100 }, { x: 10, y: 10 }, 35);
 
 
   let lastFrame = 0;
