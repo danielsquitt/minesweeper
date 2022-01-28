@@ -1,5 +1,4 @@
 import { Point } from "../types/Point";
-import { CallbackOneParam } from "../types/Types";
 import { Actor } from "./Actor";
 
 const imgTileUndiscover = require("../../assets/img/Cell.png");

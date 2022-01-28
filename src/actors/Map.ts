@@ -29,7 +29,7 @@ export class Map extends Actor {
     generateMap(w: number, h: number, m: number, cellSize: Point): Array<Array<Tile>> {
         // Generate an empty map
         let map: Array<Array<Tile>> = array2dNew<Tile>(h, w).map((row, i_row) => row.map((cell, i_cell) => {
-            return  new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize);
+            return new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize);
         }))
 
         // Set bombs
