@@ -1,4 +1,5 @@
 import { Point } from "../types/Point";
+import { CallbackOneParam } from "../types/Types";
 import { Actor } from "./Actor";
 
 const imgTileUndiscover = require("../../assets/img/Cell.png");
@@ -35,6 +36,8 @@ export class Tile extends Actor {
   down: boolean;
   end: boolean;
   discovered: boolean;
+  // Others
+  change: boolean;
   // Images
   img_undiscover: HTMLImageElement;
   img_undiscoverOver: HTMLImageElement;
@@ -58,6 +61,7 @@ export class Tile extends Actor {
     this.over = false;
     this.down = false;
     this.end = false;
+    this.change = false
     this.img_undiscover = new Image();
     this.img_undiscover.src = imgTileUndiscover;
     this.img_undiscoverOver = new Image();
@@ -81,6 +85,8 @@ export class Tile extends Actor {
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
+    if(!this.change) return;
+    this.change = false;
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES
       if (this.end && this.flag && !this.bomb) {
@@ -119,4 +125,30 @@ export class Tile extends Actor {
       }
     }
   }
+
+  setOver = (state: boolean, mouseDown: boolean = false):void => {
+    this.change = true;
+    this.over = state;
+    if(!state) this.down = false;
+    if(state && mouseDown) this.down = true;
+  }
+  setDownLeft = (state: boolean): void => {
+    this.change = true;
+    if (!this.over || this.flag)  return;
+    this.down = state;
+    if (!this.flag && !state) this.discovered = true;
+  }
+  setDownRigth = (state: boolean): void => {
+    this.change = true;
+    if (!this.over)  return;
+    this.down = state;
+    if(!state) this.flag = !this.flag;
+  }
+  setBomb(){
+    this.bomb = true;
+  }
+  increaseNumber(){
+    this.number++
+  }
+
 }

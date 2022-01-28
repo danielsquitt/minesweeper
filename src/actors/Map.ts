@@ -2,6 +2,7 @@ import { Point, typeOfPoint } from "../types/Point";
 import { Actor } from "./Actor";
 import _, { map, max, min } from 'lodash';
 import { Tile } from "./Tile";
+import { array2dIterator, array2dNew, array2dSurroundIterator } from "../utils/ArrayIterators";
 
 export class Map extends Actor {
     size: Point;  // Size in number of tilles of map
@@ -23,40 +24,36 @@ export class Map extends Actor {
         this.mouse = { leftDown: false, rightDown: false };
 
         this.map = this.generateMap(this.size.x, this.size.y, this.m, this.sizePxCell);
-        console.log(this.map);
-
     }
     // Generates a map. -1 Mine, 0,...8 No mine
     generateMap(w: number, h: number, m: number, cellSize: Point): Array<Array<Tile>> {
         // Generate an empty map
-        console.time("Timer");
-        let map: Array<Array<number>> = Array.from(Array(h), () => new Array(w).fill(0))
+        let map: Array<Array<Tile>> = array2dNew<Tile>(h, w).map((row, i_row) => row.map((cell, i_cell) => {
+            return  new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize);
+        }))
 
         // Set bombs
         for (let i = 0; i < m; i++) {
             while (true) {
                 let h_ = _.random(0, h - 1);
                 let w_ = _.random(0, w - 1);
-                if (map[h_][w_] !== -1) {
-                    setBomb(map, h_, w_)
+                if (!map[h_][w_].bomb) {
+                    //setBomb(map, h_, w_)
+                    for(let cell of array2dSurroundIterator<Tile>(map, h_, w_)){
+                        cell.increaseNumber();
+                    }
+                    map[h_][w_].setBomb();
                     break;
                 }
             }
         }
         console.log(map);
-        console.timeEnd("Timer");
-
-        return map.map((row, i_row) => row.map((cell, i_cell) => {
-            let tile = new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize);
-            if (cell == -1) tile.bomb = true;
-            else tile.number = cell as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-            return tile;
-        }))
+        return map;
     }
 
     // Draw 
     draw(delta: number, ctx: CanvasRenderingContext2D) {
-        for (let cell of mapIterator(this.map)) {
+        for (let cell of array2dIterator(this.map)) {
             ctx.save();
             cell.draw(delta, ctx);
             ctx.restore();
@@ -64,65 +61,43 @@ export class Map extends Actor {
     }
 
     // Mouse event
-    mouseEvent(event: "over", data: Point): void;
+    mouseEvent(event: "over", position: Point): void;
     mouseEvent(event: "Leftdown"): void;
     mouseEvent(event: "Rightdown"): void;
     mouseEvent(event: "Leftup"): void;
     mouseEvent(event: "Rightup"): void;
     mouseEvent(event: "Bothdown"): void;
-    mouseEvent(event: unknown, data?: unknown): void {
+    mouseEvent(event: unknown, position?: unknown): void {
         // Event over
-        if (event === "over" && typeOfPoint(data)) {
-            let pos = data as Point;
-            for (let cell of mapIterator(this.map)) {
-                if (pos.x >= cell.position.x && pos.x <= cell.position.x + cell.size.x && pos.y >= cell.position.y && pos.y <= cell.position.y + cell.size.y) {
-                    cell.over = true;
-                    cell.down = (this.mouse.leftDown || this.mouse.rightDown) && !cell.flag;
-                } else {
-                    cell.over = false;
-                    cell.down = false;
-                }
+        if (event === "over" && typeOfPoint(position)) {
+            let pos = position as Point;
+            for (let cell of array2dIterator(this.map)) {
+                let over = pos.x >= cell.position.x && pos.x <= cell.position.x + cell.size.x && pos.y >= cell.position.y && pos.y <= cell.position.y + cell.size.y
+                cell.setOver(over, this.mouse.leftDown || this.mouse.rightDown)
             }
             // Event mouse left down
-        } else if (event === "Leftdown") {            
+        } else if (event === "Leftdown") {
             this.mouse.leftDown = true;
-            for (let cell of mapIterator(this.map)) {
-                if (cell.over && !cell.flag) {
-                    cell.down = true;
-                    break;
-                }
+            for (let cell of array2dIterator(this.map)) {
+                cell.setDownLeft(true)
             }
         } else if (event === "Leftup") {
             this.mouse.leftDown = false;
-            for (let cell of mapIterator(this.map)) {
-                if (cell.over) {
-                    cell.down = false;
-                    if (!cell.flag) cell.discovered = true;
-                    break;
-                }
+            for (let cell of array2dIterator(this.map)) {
+                cell.setDownLeft(false)
             }
         } else if (event === "Rightdown") {
             this.mouse.rightDown = true;
-            for (let cell of mapIterator(this.map)) {
-                if (cell.over) {
-                    cell.down = true;
-                    break;
-                }
+            for (let cell of array2dIterator(this.map)) {
+                cell.setDownRigth(true);
             }
         } else if (event === "Rightup") {
             this.mouse.rightDown = false;
-            for (let cell of mapIterator(this.map)) {
-                if (cell.over) {
-                    cell.down = false;
-                    cell.flag = !cell.flag;
-                    break;
-                }
+            for (let cell of array2dIterator(this.map)) {
+                cell.setDownRigth(false);
             }
         }
     }
-
-
-
 }
 
 const setBomb = (map: Array<Array<number>>, h: number, w: number) => {
@@ -131,14 +106,5 @@ const setBomb = (map: Array<Array<number>>, h: number, w: number) => {
             if (i == h && j == w) map[i][j] = -1
             else if (map[i][j] != -1) map[i][j]++
         }
-
-    }
-}
-
-const mapIterator = function* (map: Array<Array<Tile>>) {
-    for (let i = 0; i < map.length; i++) {
-        for (let j = 0; j < map[i].length; j++) {
-            yield map[i][j];
-        };
     }
 }
