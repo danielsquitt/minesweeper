@@ -4,13 +4,11 @@ import { Tile } from "./actors/Tile";
 
 window.onload = () => {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-  const actors: Array<IActor> = [];
+  let map = new Map({ x: ctx.canvas.width , y: ctx.canvas.height }, { x: 15, y: 25 }, 100);
 
-
-  let map = new Map({ x: 100, y: 100 }, { x: 10, y: 10 }, 35);
-
+  const actors: Array<IActor> = [map];
 
   let lastFrame = 0;
   const render = (time: number) => {

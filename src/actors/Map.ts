@@ -1,22 +1,31 @@
 import { Point } from "../types/Point";
 import { Actor } from "./Actor";
 import _, { max, min } from 'lodash';
+import { Tile } from "./Tile";
 
 export class Map extends Actor {
-    size: Point;  // Size in number of tilles
-    sizePx: Point;  // Size in pixels
+    size: Point;  // Size in number of tilles of map
+    sizePxCell: Point;  // Size in pixels of cell
     m: number;
+    map: Array<Array<Tile>>;
+
     constructor(sizePx: Point, sizeN: Point, m: number) {
+        if(m/(sizeN.x * sizeN.y) > 0.3) throw new Error(`Error: Bomb density ${m/(sizeN.x * sizeN.y)} is bigger than ${0.3}`);
+        
+
+
         super({ x: 0, y: 0 });
         this.size = sizeN;
-        let cellSize = Math.min(Math.floor(sizeN.x / sizePx.x), Math.floor(sizeN.y / sizePx.y));
-        this.sizePx = { x: sizePx.x * cellSize, y: sizePx.y * cellSize };
+        let cellSize = Math.min(Math.floor(sizePx.x / sizeN.x), Math.floor(sizePx.y / sizeN.y));
+        this.sizePxCell = { x: cellSize, y: cellSize };
         this.m = m;
 
-        this.generateMap(this.size.x, this.size.y, this.m);
+        this.map = this.generateMap(this.size.x, this.size.y, this.m, this.sizePxCell);
+        console.log(this.map);
+
     }
     // Generates a map. -1 Mine, 0,...8 No mine
-    generateMap(w: number, h: number, m: number) {
+    generateMap(w: number, h: number, m: number, cellSize: Point): Array<Array<Tile>> {
         // Generate an empty map
         console.time("Timer");
         let map: Array<Array<number>> = Array.from(Array(h), () => new Array(w).fill(0))
@@ -34,6 +43,22 @@ export class Map extends Actor {
         }
         console.log(map);
         console.timeEnd("Timer");
+
+        return map.map((row, i_row) => row.map((cell, i_cell) => { 
+            let tile = new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize);
+            if( cell == -1) tile.bomb = true;
+            else tile.number = cell as  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+            return tile;
+        }))
+    }
+
+    // Draw 
+    draw(delta: number, ctx: CanvasRenderingContext2D) {
+        this.map.forEach((row) => row.forEach((e) => {
+            ctx.save();
+            e.draw(delta, ctx);
+            ctx.restore();
+        }))
     }
 }
 
