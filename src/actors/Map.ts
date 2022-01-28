@@ -20,7 +20,7 @@ export class Map extends Actor {
         let cellSize = Math.min(Math.floor(sizePx.x / sizeN.x), Math.floor(sizePx.y / sizeN.y));
         this.sizePxCell = { x: cellSize, y: cellSize };
         this.m = m;
-        this.mouse = {leftDown: false, rightDown:false};
+        this.mouse = { leftDown: false, rightDown: false };
 
         this.map = this.generateMap(this.size.x, this.size.y, this.m, this.sizePxCell);
         console.log(this.map);
@@ -77,17 +77,17 @@ export class Map extends Actor {
             for (let cell of mapIterator(this.map)) {
                 if (pos.x >= cell.position.x && pos.x <= cell.position.x + cell.size.x && pos.y >= cell.position.y && pos.y <= cell.position.y + cell.size.y) {
                     cell.over = true;
-                    cell.down = this.mouse.leftDown;
+                    cell.down = (this.mouse.leftDown || this.mouse.rightDown) && !cell.flag;
                 } else {
                     cell.over = false;
                     cell.down = false;
                 }
             }
             // Event mouse left down
-        } else if (event === "Leftdown") {
+        } else if (event === "Leftdown") {            
             this.mouse.leftDown = true;
             for (let cell of mapIterator(this.map)) {
-                if (cell.over) {
+                if (cell.over && !cell.flag) {
                     cell.down = true;
                     break;
                 }
@@ -96,7 +96,8 @@ export class Map extends Actor {
             this.mouse.leftDown = false;
             for (let cell of mapIterator(this.map)) {
                 if (cell.over) {
-                    cell.discovered = true;
+                    cell.down = false;
+                    if (!cell.flag) cell.discovered = true;
                     break;
                 }
             }
@@ -112,7 +113,8 @@ export class Map extends Actor {
             this.mouse.rightDown = false;
             for (let cell of mapIterator(this.map)) {
                 if (cell.over) {
-                    cell.flag = true;
+                    cell.down = false;
+                    cell.flag = !cell.flag;
                     break;
                 }
             }

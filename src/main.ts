@@ -32,7 +32,7 @@ window.onload = () => {
   });
 
   // Prevent context menu
-  document.addEventListener('contextmenu', event => event.preventDefault());
+  canvas.oncontextmenu = function(e) { e.preventDefault(); e.stopPropagation(); }
 
   // Mouse down event
   canvas.addEventListener('mousedown', (e) => {
