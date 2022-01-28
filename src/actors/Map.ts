@@ -1,6 +1,6 @@
-import { Point } from "../types/Point";
+import { Point, typeOfPoint } from "../types/Point";
 import { Actor } from "./Actor";
-import _, { max, min } from 'lodash';
+import _, { map, max, min } from 'lodash';
 import { Tile } from "./Tile";
 
 export class Map extends Actor {
@@ -8,17 +8,19 @@ export class Map extends Actor {
     sizePxCell: Point;  // Size in pixels of cell
     m: number;
     map: Array<Array<Tile>>;
+    mouse: {
+        leftDown: boolean,
+        rightDown: boolean
+    }
 
     constructor(sizePx: Point, sizeN: Point, m: number) {
-        if(m/(sizeN.x * sizeN.y) > 0.3) throw new Error(`Error: Bomb density ${m/(sizeN.x * sizeN.y)} is bigger than ${0.3}`);
-        
-
-
+        if (m / (sizeN.x * sizeN.y) > 0.3) throw new Error(`Error: Bomb density ${m / (sizeN.x * sizeN.y)} is bigger than ${0.3}`);
         super({ x: 0, y: 0 });
         this.size = sizeN;
         let cellSize = Math.min(Math.floor(sizePx.x / sizeN.x), Math.floor(sizePx.y / sizeN.y));
         this.sizePxCell = { x: cellSize, y: cellSize };
         this.m = m;
+        this.mouse = {leftDown: false, rightDown:false};
 
         this.map = this.generateMap(this.size.x, this.size.y, this.m, this.sizePxCell);
         console.log(this.map);
@@ -44,22 +46,81 @@ export class Map extends Actor {
         console.log(map);
         console.timeEnd("Timer");
 
-        return map.map((row, i_row) => row.map((cell, i_cell) => { 
+        return map.map((row, i_row) => row.map((cell, i_cell) => {
             let tile = new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize);
-            if( cell == -1) tile.bomb = true;
-            else tile.number = cell as  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+            if (cell == -1) tile.bomb = true;
+            else tile.number = cell as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
             return tile;
         }))
     }
 
     // Draw 
     draw(delta: number, ctx: CanvasRenderingContext2D) {
-        this.map.forEach((row) => row.forEach((e) => {
+        for (let cell of mapIterator(this.map)) {
             ctx.save();
-            e.draw(delta, ctx);
+            cell.draw(delta, ctx);
             ctx.restore();
-        }))
+        }
     }
+
+    // Mouse event
+    mouseEvent(event: "over", data: Point): void;
+    mouseEvent(event: "Leftdown"): void;
+    mouseEvent(event: "Rightdown"): void;
+    mouseEvent(event: "Leftup"): void;
+    mouseEvent(event: "Rightup"): void;
+    mouseEvent(event: "Bothdown"): void;
+    mouseEvent(event: unknown, data?: unknown): void {
+        // Event over
+        if (event === "over" && typeOfPoint(data)) {
+            let pos = data as Point;
+            for (let cell of mapIterator(this.map)) {
+                if (pos.x >= cell.position.x && pos.x <= cell.position.x + cell.size.x && pos.y >= cell.position.y && pos.y <= cell.position.y + cell.size.y) {
+                    cell.over = true;
+                    cell.down = this.mouse.leftDown;
+                } else {
+                    cell.over = false;
+                    cell.down = false;
+                }
+            }
+            // Event mouse left down
+        } else if (event === "Leftdown") {
+            this.mouse.leftDown = true;
+            for (let cell of mapIterator(this.map)) {
+                if (cell.over) {
+                    cell.down = true;
+                    break;
+                }
+            }
+        } else if (event === "Leftup") {
+            this.mouse.leftDown = false;
+            for (let cell of mapIterator(this.map)) {
+                if (cell.over) {
+                    cell.discovered = true;
+                    break;
+                }
+            }
+        } else if (event === "Rightdown") {
+            this.mouse.rightDown = true;
+            for (let cell of mapIterator(this.map)) {
+                if (cell.over) {
+                    cell.down = true;
+                    break;
+                }
+            }
+        } else if (event === "Rightup") {
+            this.mouse.rightDown = false;
+            for (let cell of mapIterator(this.map)) {
+                if (cell.over) {
+                    cell.flag = true;
+                    break;
+                }
+            }
+        }
+    }
+
+
+
 }
 
 const setBomb = (map: Array<Array<number>>, h: number, w: number) => {
@@ -69,5 +130,13 @@ const setBomb = (map: Array<Array<number>>, h: number, w: number) => {
             else if (map[i][j] != -1) map[i][j]++
         }
 
+    }
+}
+
+const mapIterator = function* (map: Array<Array<Tile>>) {
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map[i].length; j++) {
+            yield map[i][j];
+        };
     }
 }
