@@ -24,13 +24,25 @@ export class Map extends Actor {
         this.mouse = { leftDown: false, rightDown: false };
 
         this.map = this.generateMap(this.size.x, this.size.y, this.m, this.sizePxCell);
+/*
+        for(let i = 0; i < this.map.length; i++){
+            for(let j = 0; j < this.map[i].length; j++){
+                this.map[i][j].iterator = array2dSurroundIterator(this.map, i, j);
+            }
+        }*/
     }
     // Generates a map. -1 Mine, 0,...8 No mine
     generateMap(w: number, h: number, m: number, cellSize: Point): Array<Array<Tile>> {
         // Generate an empty map
-        let map: Array<Array<Tile>> = array2dNew<Tile>(h, w).map((row, i_row) => row.map((cell, i_cell) => {
-            return new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize);
-        }))
+        let map: Array<Array<Tile>> = array2dNew<Tile>(h, w);
+        for(let i = 0; i < map.length; i++){
+            for(let j = 0; j < map[i].length; j++){
+                map[i][j]= new Tile({ x: cellSize.x * i, y: cellSize.y * j }, cellSize, array2dSurroundIterator(map, i, j));
+            }
+        }
+        /*.map((row, i_row, array) => row.map((cell, i_cell) => {
+           return new Tile({ x: cellSize.x * i_cell, y: cellSize.y * i_row }, cellSize, array2dSurroundIterator(array, i_row, i_cell));
+        }))*/
 
         // Set bombs
         for (let i = 0; i < m; i++) {
@@ -67,7 +79,7 @@ export class Map extends Actor {
     mouseEvent(event: "Leftup"): void;
     mouseEvent(event: "Rightup"): void;
     mouseEvent(event: "Bothdown"): void;
-    mouseEvent(event: unknown, position?: unknown): void {
+    mouseEvent(event: string, position?: Point): void {
         // Event over
         if (event === "over" && typeOfPoint(position)) {
             let pos = position as Point;
@@ -96,15 +108,6 @@ export class Map extends Actor {
             for (let cell of array2dIterator(this.map)) {
                 cell.setDownRigth(false);
             }
-        }
-    }
-}
-
-const setBomb = (map: Array<Array<number>>, h: number, w: number) => {
-    for (let i = Math.max(h - 1, 0); i <= h + 1 && i < map.length; i++) {
-        for (let j = Math.max(w - 1, 0); j <= w + 1 && j < map[0].length; j++) {
-            if (i == h && j == w) map[i][j] = -1
-            else if (map[i][j] != -1) map[i][j]++
         }
     }
 }
