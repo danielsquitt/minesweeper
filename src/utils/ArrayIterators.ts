@@ -9,7 +9,7 @@ export const array2dIterator = function* <T>(array: Array<Array<T>>) {
 export const array2dSurroundIterator = function* <T>(array: Array<Array<T>>, row: number, col: number) {
     for (let i = Math.max(row - 1, 0); i <= row + 1 && i < array.length; i++) {
         for (let j = Math.max(col - 1, 0); j <= col + 1 && j < array[i].length; j++) {
-            if(i != j) yield array[i][j];
+            if(i != row || j != col) yield array[i][j];
         };
     }
 }
