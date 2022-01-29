@@ -37,6 +37,7 @@ export class Tile extends Actor {
   discovered: boolean;
   // Others
   change: boolean;
+  iterator: Generator<Tile, void, undefined> | undefined;
   // Images
   img_undiscover: HTMLImageElement;
   img_undiscoverOver: HTMLImageElement;
@@ -49,7 +50,7 @@ export class Tile extends Actor {
   img_revealedMine: HTMLImageElement;
   img_flaggedWrong: HTMLImageElement;
 
-  constructor(initialPos: Point, size: Point) {
+  constructor(initialPos: Point, size: Point, iterator?: Generator<Tile, void, undefined>) {
 
     super(initialPos);
     this.size = size;
@@ -81,10 +82,12 @@ export class Tile extends Actor {
     this.img_revealedMine.src = imgTileRevealedMine;
     this.img_flaggedWrong = new Image();
     this.img_flaggedWrong.src = imgTileFlaggedWrong;
+    if (iterator)
+      this.iterator = iterator;
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
-    if(!this.change) return;
+    if (!this.change) return;
     this.change = false;
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES
@@ -125,28 +128,37 @@ export class Tile extends Actor {
     }
   }
 
-  setOver = (state: boolean, mouseDown: boolean = false):void => {
+  onDiscover() {
+    this.discovered = true;
+    if (this.number == 0 && !this.bomb &&this.iterator) {
+      for (let cell of this.iterator) {
+        cell.onDiscover()
+      }
+    }
+  }
+
+  setOver = (state: boolean, mouseDown: boolean = false): void => {
     this.change = true;
     this.over = state;
-    if(!state) this.down = false;
-    if(state && mouseDown) this.down = true;
+    if (!state) this.down = false;
+    if (state && mouseDown) this.down = true;
   }
   setDownLeft = (state: boolean): void => {
     this.change = true;
-    if (!this.over || this.flag)  return;
+    if (!this.over || this.flag) return;
     this.down = state;
-    if (!this.flag && !state) this.discovered = true;
+    if (!this.flag && !state) this.onDiscover()
   }
   setDownRigth = (state: boolean): void => {
     this.change = true;
-    if (!this.over)  return;
+    if (!this.over) return;
     this.down = state;
-    if(!state) this.flag = !this.flag;
+    if (!state) this.flag = !this.flag;
   }
-  setBomb(){
+  setBomb() {
     this.bomb = true;
   }
-  increaseNumber(){
+  increaseNumber() {
     this.number++
   }
 
