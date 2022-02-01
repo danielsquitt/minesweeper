@@ -27,7 +27,8 @@ export class Map extends Actor {
     this.size = sizeN;
     const cellSize = Math.min(
       Math.floor(sizePx.x / sizeN.x),
-      Math.floor(sizePx.y / sizeN.y)
+      Math.floor(sizePx.y / sizeN.y),
+      100
     );
     this.sizePxCell = { x: cellSize, y: cellSize };
     this.m = m;

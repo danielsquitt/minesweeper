@@ -1,4 +1,5 @@
 import { IActor } from "./actors/Actor";
+import { Layout } from "./actors/Layout";
 import { Map } from "./actors/Map";
 
 window.onload = () => {
@@ -6,8 +7,10 @@ window.onload = () => {
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   let map = new Map({ x: ctx.canvas.width, y: ctx.canvas.height }, { x: 10, y: 10 }, 20);
+  let layout = new Layout();
 
-  const actors: Array<IActor> = [map];
+  const actors: Array<IActor> = [layout];
+
 
   let lastFrame = 0;
   const render = (time: number) => {
@@ -32,7 +35,7 @@ window.onload = () => {
   });
 
   // Prevent context menu
-  canvas.oncontextmenu = function(e) { e.preventDefault(); e.stopPropagation(); }
+  canvas.oncontextmenu = function (e) { e.preventDefault(); e.stopPropagation(); }
 
   // Mouse down event
   canvas.addEventListener('mousedown', (e) => {
