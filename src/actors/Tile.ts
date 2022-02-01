@@ -13,16 +13,16 @@ const imgTileRevealedMine = require("../../assets/img/RevealedMineCell.png");
 const imgTileFlaggedWrong = require("../../assets/img/FlaggedWrongCell.png");
 
 const colors = [
-  '#ffffff',     // 0 - undefined
-  '#244AFC',     // 1 - undefined
-  '#407F07',     // 2 - undefined
-  '#E93F33',     // 3 - undefined
-  '#0C207E',     // 4 - undefined
-  '#811F18',     // 5 - undefined
-  '#3A8181',     // 6 - undefined
-  '#000000',     // 7 - undefined
-  '#808080',     // 8 - undefined
-]
+  "#ffffff", // 0 - undefined
+  "#244AFC", // 1 - undefined
+  "#407F07", // 2 - undefined
+  "#E93F33", // 3 - undefined
+  "#0C207E", // 4 - undefined
+  "#811F18", // 5 - undefined
+  "#3A8181", // 6 - undefined
+  "#000000", // 7 - undefined
+  "#808080", // 8 - undefined
+];
 
 export class Tile extends Actor {
   // Dimensinal paramters
@@ -37,6 +37,7 @@ export class Tile extends Actor {
   discovered: boolean;
   // Others
   change: boolean;
+  // eslint-disable-next-line no-use-before-define
   iterator: Generator<Tile, void, undefined> | undefined;
   // Images
   img_undiscover: HTMLImageElement;
@@ -51,7 +52,6 @@ export class Tile extends Actor {
   img_flaggedWrong: HTMLImageElement;
 
   constructor(initialPos: Point, size: Point, iterator?: Generator<Tile, void, undefined>) {
-
     super(initialPos);
     this.size = size;
     this.flag = false;
@@ -61,7 +61,7 @@ export class Tile extends Actor {
     this.over = false;
     this.down = false;
     this.end = false;
-    this.change = false
+    this.change = false;
     this.img_undiscover = new Image();
     this.img_undiscover.src = imgTileUndiscover;
     this.img_undiscoverOver = new Image();
@@ -82,8 +82,7 @@ export class Tile extends Actor {
     this.img_revealedMine.src = imgTileRevealedMine;
     this.img_flaggedWrong = new Image();
     this.img_flaggedWrong.src = imgTileFlaggedWrong;
-    if (iterator)
-      this.iterator = iterator;
+    if (iterator) { this.iterator = iterator; }
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -95,44 +94,38 @@ export class Tile extends Actor {
         ctx.drawImage(this.img_flaggedWrong, 0, 0, this.size.x, this.size.y);
       } else if (this.end && this.bomb && !this.flag) {
         ctx.drawImage(this.img_revealedMine, 0, 0, this.size.x, this.size.y);
-      } else {
-        if (this.flag) {
-          if (this.down) {
-            ctx.drawImage(this.img_flagDown, 0, 0, this.size.x, this.size.y);
-          } else if (this.over) {
-            ctx.drawImage(this.img_flagOver, 0, 0, this.size.x, this.size.y);
-          } else {
-            ctx.drawImage(this.img_flag, 0, 0, this.size.x, this.size.y);
-          }
+      } else if (this.flag) {
+        if (this.down) {
+          ctx.drawImage(this.img_flagDown, 0, 0, this.size.x, this.size.y);
+        } else if (this.over) {
+          ctx.drawImage(this.img_flagOver, 0, 0, this.size.x, this.size.y);
         } else {
-          if (this.down) {
-            ctx.drawImage(this.img_undiscoverDown, 0, 0, this.size.x, this.size.y);
-          } else if (this.over) {
-            ctx.drawImage(this.img_undiscoverOver, 0, 0, this.size.x, this.size.y);
-          } else {
-            ctx.drawImage(this.img_undiscover, 0, 0, this.size.x, this.size.y);
-          }
+          ctx.drawImage(this.img_flag, 0, 0, this.size.x, this.size.y);
         }
-      }
-    } else {  // DISCOVERED TILES
-      if (this.bomb) {
-        ctx.drawImage(this.img_explodedMine, 0, 0, this.size.x, this.size.y);
+      } else if (this.down) {
+        ctx.drawImage(this.img_undiscoverDown, 0, 0, this.size.x, this.size.y);
+      } else if (this.over) {
+        ctx.drawImage(this.img_undiscoverOver, 0, 0, this.size.x, this.size.y);
       } else {
-        ctx.drawImage(this.img_empty, 0, 0, this.size.x, this.size.y);
-        if (this.number > 0) {
-          ctx.font = `${this.size.x * 0.8}px Arial`;
-          ctx.fillStyle = colors[this.number];
-          ctx.fillText(this.number.toString(), this.size.x * 0.27, this.size.y * 0.80);
-        }
+        ctx.drawImage(this.img_undiscover, 0, 0, this.size.x, this.size.y);
+      }
+    } else if (this.bomb) {
+      ctx.drawImage(this.img_explodedMine, 0, 0, this.size.x, this.size.y);
+    } else {
+      ctx.drawImage(this.img_empty, 0, 0, this.size.x, this.size.y);
+      if (this.number > 0) {
+        ctx.font = `${this.size.x * 0.8}px Arial`;
+        ctx.fillStyle = colors[this.number];
+        ctx.fillText(this.number.toString(), this.size.x * 0.27, this.size.y * 0.80);
       }
     }
   }
 
   onDiscover() {
     this.discovered = true;
-    if (this.number == 0 && !this.bomb &&this.iterator) {
-      for (let cell of this.iterator) {
-        cell.onDiscover()
+    if (this.number === 0 && !this.bomb && this.iterator) {
+      for (const cell of this.iterator) {
+        cell.onDiscover();
       }
     }
   }
@@ -142,24 +135,23 @@ export class Tile extends Actor {
     this.over = state;
     if (!state) this.down = false;
     if (state && mouseDown) this.down = true;
-  }
+  };
   setDownLeft = (state: boolean): void => {
     this.change = true;
     if (!this.over || this.flag) return;
     this.down = state;
-    if (!this.flag && !state) this.onDiscover()
-  }
+    if (!this.flag && !state) this.onDiscover();
+  };
   setDownRigth = (state: boolean): void => {
     this.change = true;
     if (!this.over) return;
     this.down = state;
     if (!state) this.flag = !this.flag;
-  }
+  };
   setBomb() {
     this.bomb = true;
   }
   increaseNumber() {
-    this.number++
+    this.number++;
   }
-
 }

@@ -27,6 +27,8 @@
         "no-unused-vars":"warn",
         "no-useless-constructor":"warn",
         "no-empty-function":"warn",
-        "lines-between-class-members":"off"
+        "lines-between-class-members":"off",
+        "no-restricted-syntax":"off",
+        "no-dupe-class-members":"off",
     }
 }
