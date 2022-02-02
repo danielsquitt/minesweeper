@@ -2,17 +2,21 @@ import { Actor } from "./Actor";
 import { NumberBox } from "./NumberBox";
 
 const imgMineLogo = require("../../assets/img/MineLogo.png");
+const imgTimeLogo = require("../../assets/img/TimeLogo.png");
 
 export class Layout extends Actor {
-    //timer: NumberBox;
+    timer: NumberBox;
     mine_cnt:NumberBox;
     
 
     constructor(){
         super({x: 0, y: 0})
-        let img = new Image();
-        img.src = imgMineLogo;
-        this.mine_cnt = new NumberBox({x: 100, y: 100}, 100, img, 3, 222);
+        let imgMine = new Image();
+        imgMine.src = imgMineLogo;
+        this.mine_cnt = new NumberBox({x: 100, y: 50}, 100, imgMine, 3, 0);
+        let imgTime = new Image();
+        imgTime.src = imgTimeLogo;
+        this.timer = new NumberBox({x: 1900, y: 50}, 100, imgTime, 3, 0, true);
     }
 
     draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -32,6 +36,7 @@ export class Layout extends Actor {
         ctx.stroke();
 
         this.mine_cnt.draw(delta, ctx);
+        this.timer.draw(delta, ctx);
 
 
     }
