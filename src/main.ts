@@ -6,10 +6,10 @@ window.onload = () => {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-  let map = new Map({ x: ctx.canvas.width, y: ctx.canvas.height }, { x: 10, y: 10 }, 20);
   let layout = new Layout(ctx);
+  let map = new Map(layout.mapPos.pos,layout.mapPos.size, { x: 30, y: 20 }, 100);
 
-  const actors: Array<IActor> = [layout];
+  const actors: Array<IActor> = [layout, map];
 
 
   let lastFrame = 0;
@@ -23,7 +23,7 @@ window.onload = () => {
       ctx.restore();
     });
     window.requestAnimationFrame(render);
-  };
+  }; 
   window.requestAnimationFrame(render);
 
   // Mouse over event

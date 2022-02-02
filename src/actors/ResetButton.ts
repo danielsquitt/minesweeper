@@ -25,7 +25,7 @@ export class ResetButton extends Actor {
         this.size = size;
     }
 
-    draw(delta: number, ctx: CanvasRenderingContext2D): void {
+    draw(delta: number, ctx: CanvasRenderingContext2D): void {        
         ctx.drawImage(this.img_FaceHappy, this.position.x, this.position.y, this.size, this.size)
     }
 }
