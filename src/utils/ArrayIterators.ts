@@ -1,3 +1,5 @@
+import { TypeFlags } from "typescript";
+
 export const array2dIterator = function* <T>(array: Array<Array<T>>) {
     for (let i = 0; i < array.length; i++) {
         for (let j = 0; j < array[i].length; j++) {

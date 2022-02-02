@@ -1,4 +1,4 @@
-import _, { map, max, min } from "lodash";
+import _ from "lodash";
 import { Point, typeOfPoint } from "../types/Point";
 import { Actor } from "./Actor";
 import { Tile } from "./Tile";
@@ -10,64 +10,60 @@ import {
 
 export class Map extends Actor {
   size: Point; // Size in number of tilles of map
+  sizePx: Point; // Size in number of tilles of map
   sizePxCell: Point; // Size in pixels of cell
-  m: number;
+  nMines: number;
   map: Array<Array<Tile>>;
   mouse: {
     leftDown: boolean;
     rightDown: boolean;
   };
 
-  constructor(sizePx: Point, sizeN: Point, m: number) {
-    if (m / (sizeN.x * sizeN.y) > 0.3)
+  constructor(position: Point, sizePx: Point, sizeN: Point, nMines: number) {
+    if (nMines / (sizeN.x * sizeN.y) > 0.3)
       throw new Error(
-        `Error: Bomb density ${m / (sizeN.x * sizeN.y)} is bigger than ${0.3}`
+        `Error: Bomb density ${nMines / (sizeN.x * sizeN.y)} is bigger than ${0.3}`
       );
-    super({ x: 0, y: 0 });
+    super(position);
     this.size = sizeN;
+    this.sizePx = sizePx;
     const cellSize = Math.min(
       Math.floor(sizePx.x / sizeN.x),
       Math.floor(sizePx.y / sizeN.y),
       100
     );
     this.sizePxCell = { x: cellSize, y: cellSize };
-    this.m = m;
+    this.nMines = nMines;
     this.mouse = { leftDown: false, rightDown: false };
-
-    this.map = Map.generateMap(
-      this.size.x,
-      this.size.y,
-      this.m,
-      this.sizePxCell
-    );
+    
+    this.map = this.generateMap();    
   }
   // Generates a map. -1 Mine, 0,...8 No mine
-  static generateMap(
-    w: number,
-    h: number,
-    m: number,
-    cellSize: Point
-  ): Array<Array<Tile>> {
+  generateMap(): Array<Array<Tile>> {
+    // Calculate map positionx
+    let py = (this.sizePx.y - this.size.y * this.sizePxCell.y) / 2 + this.position.y;
+    let px = (this.sizePx.x - this.size.x * this.sizePxCell.x) / 2 + this.position.x;
+    
     // Generate an empty map
-    const map: Array<Array<Tile>> = array2dNew<Tile>(h, w);
+    const map: Array<Array<Tile>> = array2dNew<Tile>(this.size.y, this.size.x);
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
-        const pos: Point = { x: cellSize.x * i, y: cellSize.y * j };
-        map[i][j] = new Tile(pos, cellSize, array2dSurroundIterator(map, i, j));
+        const pos: Point = { x: this.sizePxCell.x * j + px, y: this.sizePxCell.y * i + py };
+        map[i][j] = new Tile(pos, this.sizePxCell, array2dSurroundIterator(map, i, j));
       }
     }
 
     // Set bombs
-    for (let i = 0; i < m; i++) {
+    for (let i = 0; i < this.nMines; i++) {
       while (true) {
-        const h_ = _.random(0, h - 1);
-        const w_ = _.random(0, w - 1);
-        if (!map[h_][w_].bomb) {
-          // setBomb(map, h_, w_)
-          for (const cell of array2dSurroundIterator<Tile>(map, h_, w_)) {
+        const y_ = _.random(0, this.size.y - 1);
+        const x_ = _.random(0, this.size.x - 1);
+        if (!map[y_][x_].bomb) {
+          // setBomb(map, y_, x_)
+          for (const cell of array2dSurroundIterator<Tile>(map, y_, x_)) {
             cell.increaseNumber();
           }
-          map[h_][w_].setBomb();
+          map[y_][x_].setBomb();
           break;
         }
       }
