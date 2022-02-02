@@ -7,7 +7,7 @@ window.onload = () => {
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   let map = new Map({ x: ctx.canvas.width, y: ctx.canvas.height }, { x: 10, y: 10 }, 20);
-  let layout = new Layout();
+  let layout = new Layout(ctx);
 
   const actors: Array<IActor> = [layout];
 

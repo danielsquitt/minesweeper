@@ -1,22 +1,25 @@
 import { Actor } from "./Actor";
 import { NumberBox } from "./NumberBox";
+import { ResetButton } from "./ResetButton";
 
 const imgMineLogo = require("../../assets/img/MineLogo.png");
 const imgTimeLogo = require("../../assets/img/TimeLogo.png");
 
 export class Layout extends Actor {
     timer: NumberBox;
-    mine_cnt:NumberBox;
+    mineCnt:NumberBox;
+    resetButton: ResetButton;
     
 
-    constructor(){
+    constructor(ctx: CanvasRenderingContext2D){
         super({x: 0, y: 0})
         let imgMine = new Image();
         imgMine.src = imgMineLogo;
-        this.mine_cnt = new NumberBox({x: 100, y: 50}, 100, imgMine, 3, 0);
+        this.mineCnt = new NumberBox({x: ctx.canvas.width*0.05, y: ctx.canvas.height*0.03}, ctx.canvas.width*0.05, imgMine, 3, 0);
         let imgTime = new Image();
         imgTime.src = imgTimeLogo;
-        this.timer = new NumberBox({x: 1900, y: 50}, 100, imgTime, 3, 0, true);
+        this.timer = new NumberBox({x: ctx.canvas.width*0.95, y: ctx.canvas.height*0.03}, ctx.canvas.width*0.05, imgTime, 3, 0, true);
+        this.resetButton = new ResetButton({x: ctx.canvas.width*0.475, y: ctx.canvas.height*0.03}, ctx.canvas.width*0.05)
     }
 
     draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -35,9 +38,9 @@ export class Layout extends Actor {
         ctx.fill();
         ctx.stroke();
 
-        this.mine_cnt.draw(delta, ctx);
+        this.mineCnt.draw(delta, ctx);
         this.timer.draw(delta, ctx);
-
+        this.resetButton.draw(delta, ctx);
 
     }
 }
