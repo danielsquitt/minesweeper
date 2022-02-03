@@ -1,3 +1,4 @@
+import { Manager } from "../state/GameManager";
 import { Point } from "../types/Point";
 import { Actor } from "./Actor";
 
@@ -129,6 +130,7 @@ export class Tile extends Actor {
         cell.onDiscover();
       }
     }
+      Manager.setStart();
   }
 
   setOver = (state: boolean, mouseDown: boolean = false): void => {
@@ -147,7 +149,10 @@ export class Tile extends Actor {
     this.change = true;
     if (!this.over) return;
     this.down = state;
-    if (!state) this.flag = !this.flag;
+    if (!state) {
+      this.flag = !this.flag
+      Manager.setFlag(this.flag)
+    };
   };
   setBomb() {
     this.bomb = true;

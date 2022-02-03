@@ -1,3 +1,4 @@
+import { setSyntheticTrailingComments } from "typescript";
 import { IActor } from "../actors/Actor";
 import { Map } from "../actors/Map";
 
@@ -19,11 +20,41 @@ class GameManager {
         this.win = false;
         this.map = map;
     }
-
-    newMap = () => {
-
+    setStart(){
+        this.start = true;
+        this.updateGameState()
     }
+    setFlag(state:boolean){
+        if(state){
+            this.remanding_mines -= 1
+        }else{
+            this.remanding_mines += 1
+        }
+        this.updateGameState()
+    }
+    updateGameState(){
+        let state = this.map.checkMap();
+        if(state === "win"){
+            this.end = true;
+            this.start = false;
+            this.win = true;
+        }else if(state === "lose"){
+            this.end = true;
+            this.start = false;
+        }
+        console.log("Mines:", this.remanding_mines + "/" + this.mines, "Start:", this.start, "End:", this.end, "Win:", this.win);   
+    }
+    resetGame(){
+        newMap(new Map(this.map.position, this.map.sizePx, this.map.size, this.map.nMines))
+    }
+
+
+
 } 
+
+
+
+
 
 export let Manager: GameManager;
 

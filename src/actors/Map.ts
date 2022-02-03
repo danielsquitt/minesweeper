@@ -7,6 +7,7 @@ import {
   array2dNew,
   array2dSurroundIterator,
 } from "../utils/ArrayIterators";
+import { Manager } from "../state/GameManager";
 
 export class Map extends Actor {
   size: Point; // Size in number of tilles of map
@@ -84,10 +85,24 @@ export class Map extends Actor {
 
   // Draw
   draw(delta: number, ctx: CanvasRenderingContext2D) {
-    for (const cell of array2dIterator(this.map)) {
+    for (const cell of array2dIterator(this.map)){
       ctx.save();
       cell.draw(delta, ctx);
       ctx.restore();
+    }
+  }
+
+  checkMap():"win" | "lose" | undefined{
+    // Check win
+    let win = true;
+    for(const cell of array2dIterator(this.map)){
+      if(!cell.discovered && !cell.bomb) win = false;
+    }
+    if(win) return "win";
+
+    // Check lose
+    for(const cell of array2dIterator(this.map)){
+      if(cell.discovered && cell.bomb) return "lose";
     }
   }
 
@@ -97,6 +112,8 @@ export class Map extends Actor {
     position?: Point
   ): void {
     // Event over
+    if (Manager.end) return
+
     if (event === "over" && typeOfPoint(position)) {
       const pos = position as Point;
       for (const cell of array2dIterator(this.map)) {
