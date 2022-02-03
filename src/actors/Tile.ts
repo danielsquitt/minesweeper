@@ -61,7 +61,7 @@ export class Tile extends Actor {
     this.over = false;
     this.down = false;
     this.end = false;
-    this.change = false;
+    this.change = true;
     this.img_undiscover = new Image();
     this.img_undiscover.src = imgTileUndiscover;
     this.img_undiscoverOver = new Image();
@@ -87,6 +87,7 @@ export class Tile extends Actor {
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
     if (!this.change) return;
+    
     this.change = false;
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES

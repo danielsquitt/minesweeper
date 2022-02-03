@@ -19,31 +19,41 @@ export class Map extends Actor {
     rightDown: boolean;
   };
 
-  constructor(position: Point, sizePx: Point, sizeN: Point, nMines: number) {
-    if (nMines / (sizeN.x * sizeN.y) > 0.3)
-      throw new Error(
-        `Error: Bomb density ${nMines / (sizeN.x * sizeN.y)} is bigger than ${0.3}`
-      );
+  constructor(position: Point = { x: 0, y: 0 }, sizePx: Point = { x: 0, y: 0 }, sizeN: Point = { x: 0, y: 0 }, nMines: number = 0) {
+    // Super
     super(position);
+
     this.size = sizeN;
     this.sizePx = sizePx;
-    const cellSize = Math.min(
-      Math.floor(sizePx.x / sizeN.x),
-      Math.floor(sizePx.y / sizeN.y),
-      100
-    );
-    this.sizePxCell = { x: cellSize, y: cellSize };
     this.nMines = nMines;
     this.mouse = { leftDown: false, rightDown: false };
-    
-    this.map = this.generateMap();    
+
+    // Map definition
+    if ((sizeN.x * sizeN.y) != 0) {
+      if (nMines / (sizeN.x * sizeN.y) > 0.3)
+        throw new Error(
+          `Error: Bomb density ${nMines / (sizeN.x * sizeN.y)} is bigger than ${0.3}`
+        );
+      const cellSize = Math.min(
+        Math.floor(sizePx.x / sizeN.x),
+        Math.floor(sizePx.y / sizeN.y),
+        100
+      );
+      this.sizePxCell = { x: cellSize, y: cellSize };
+
+      this.map = this.generateMap();
+    } else {
+      this.sizePxCell = { x: 0, y: 0 };
+      this.map = array2dNew<Tile>(0, 0);
+    }
   }
+
   // Generates a map. -1 Mine, 0,...8 No mine
   generateMap(): Array<Array<Tile>> {
     // Calculate map positionx
     let py = (this.sizePx.y - this.size.y * this.sizePxCell.y) / 2 + this.position.y;
     let px = (this.sizePx.x - this.size.x * this.sizePxCell.x) / 2 + this.position.x;
-    
+
     // Generate an empty map
     const map: Array<Array<Tile>> = array2dNew<Tile>(this.size.y, this.size.x);
     for (let i = 0; i < map.length; i++) {
