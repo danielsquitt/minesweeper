@@ -23,7 +23,6 @@ export class Map extends Actor {
   constructor(position: Point = { x: 0, y: 0 }, sizePx: Point = { x: 0, y: 0 }, sizeN: Point = { x: 0, y: 0 }, nMines: number = 0) {
     // Super
     super(position);
-
     this.size = sizeN;
     this.sizePx = sizePx;
     this.nMines = nMines;
@@ -79,12 +78,24 @@ export class Map extends Actor {
         }
       }
     }
-    console.log(map);
+    console.log(map.map(e => e.map( u => u.bomb ? "1" : "0")));
     return map;
+  }
+
+  resetMap(sizeN: Point = this.size, nMines: number = this.nMines):void {
+    if (nMines / (sizeN.x * sizeN.y) > 0.3){
+        throw new Error(
+          `Error: Bomb density ${nMines / (sizeN.x * sizeN.y)} is bigger than ${0.3}`
+        );
+    }        
+    this.size = sizeN;
+    this.nMines = nMines;
+    this.map = this.generateMap();
   }
 
   // Draw
   draw(delta: number, ctx: CanvasRenderingContext2D) {
+    
     for (const cell of array2dIterator(this.map)){
       ctx.save();
       cell.draw(delta, ctx);

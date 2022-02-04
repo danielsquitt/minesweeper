@@ -1,3 +1,4 @@
+import { Manager } from "../state/GameManager";
 import { Point } from "../types/Point";
 import { Actor } from "./Actor";
 import { NumberBox } from "./NumberBox";
@@ -57,4 +58,17 @@ export class Layout extends Actor {
         this.timer.draw(delta, ctx);
         this.resetButton.draw(delta, ctx);
     }
+
+    update(delta: number): void {
+        this.timer.value = Manager.chrono.toFixed(0);
+        this.mineCnt.value = (Manager.map.nMines - Manager.flags).toString();
+        
+    }
+
+    mouseEvent(
+        event: "over" | "Leftdown" | "Rightdown" | "Leftup" | "Rightup" | "Bothdown",
+        position?: Point
+      ): void {
+        this.resetButton.mouseEvent(event, position)
+      }
 }

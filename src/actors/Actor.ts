@@ -7,6 +7,10 @@ export interface IActor {
     position: Point;
     update: (delta: number) => void;
     draw: (delta: number, ctx: CanvasRenderingContext2D) => void;
+    mouseEvent: (
+      event: Partial<"over" | "Leftdown" | "Rightdown" | "Leftup" | "Rightup" | "Bothdown">,
+      position?: Point
+    ) => void
 }
 
 export class Actor implements IActor {
@@ -19,4 +23,9 @@ export class Actor implements IActor {
   update(delta: number) { }
 
   draw(delta: number, ctx: CanvasRenderingContext2D) { }
+
+  mouseEvent(
+    event: Partial<"over" | "Leftdown" | "Rightdown" | "Leftup" | "Rightup" | "Bothdown">,
+    position?: Point
+  ): void {}
 }

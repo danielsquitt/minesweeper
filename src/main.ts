@@ -1,7 +1,7 @@
 import { IActor } from "./actors/Actor";
 import { Layout } from "./actors/Layout";
 import { Map } from "./actors/Map";
-import { Manager, newMap } from "./state/GameManager";
+import { Manager, newManager } from "./state/GameManager";
 
 const def_width = 9;
 const def_heigth = 9;
@@ -12,19 +12,16 @@ window.onload = () => {
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   let layout = new Layout(ctx);
-  //let map = new Map(layout.mapPos.pos,layout.mapPos.size, { x: 30, y: 20 }, 100);
-  //let map = new Map();
-  newMap(new Map(layout.mapPos.pos, layout.mapPos.size, { x: def_width, y: def_heigth }, def_mines));
+  newManager(new Map(layout.mapPos.pos, layout.mapPos.size, { x: def_width, y: def_heigth }, def_mines));
 
-
-  const actors: Array<IActor> = [layout, Manager.map];
-
+  const actors: Array<IActor> = [layout, Manager];
 
   let lastFrame = 0;
   const render = (time: number) => {
     const delta = (time - lastFrame) / 1000;
     lastFrame = time;
 
+    actors.forEach((e) => {e.update(delta)});
 
     actors.forEach((e) => {
       ctx.save();
@@ -43,23 +40,33 @@ window.onload = () => {
     let cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
     let x = Math.round(e.clientX - cRect.left) * 2;  // Subtract the 'left' of the canvas 
     let y = Math.round(e.clientY - cRect.top) * 2;   // from the X/Y positions to make  
-    Manager.map.mouseEvent('over', { x, y })
+    actors.forEach((e) => {
+      e.mouseEvent('over', { x, y })
+    });
   });
 
   // Mouse down event
   canvas.addEventListener('mousedown', (e) => {
     if (e.button == 0)
-      Manager.map.mouseEvent("Leftdown")
+      actors.forEach((e) => {
+        e.mouseEvent('Leftdown')
+      });
     else if (e.button == 2)
-      Manager.map.mouseEvent("Rightdown")
+      actors.forEach((e) => {
+        e.mouseEvent('Rightdown')
+      });
   })
 
   // Mouse up event 
   canvas.addEventListener('mouseup', (e) => {
     if (e.button == 0)
-      Manager.map.mouseEvent("Leftup")
+      actors.forEach((e) => {
+        e.mouseEvent('Leftup')
+      });
     else if (e.button == 2)
-      Manager.map.mouseEvent("Rightup")
+      actors.forEach((e) => {
+        e.mouseEvent('Rightup')
+      });
   })
 
 };
