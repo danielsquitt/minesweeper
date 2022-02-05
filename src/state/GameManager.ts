@@ -1,4 +1,4 @@
-import {Actor} from '../actors/Actor';
+import { Actor } from '../actors/Actor';
 import Map from '../actors/Map';
 import { Point } from '../types/Point';
 
@@ -7,14 +7,15 @@ class GameManager extends Actor {
 
   start: boolean; // The game is started
   end: boolean;
-
   win: boolean;
-
   flags: number;
-
   chrono: number;
-
   remanding_mines: number;
+  mouse: {
+    leftDown: boolean;
+    rightDown: boolean;
+    bothDown: boolean;
+  };
 
   constructor(map: Map, pos: Point = { x: 0, y: 0 }) {
     super(pos);
@@ -25,6 +26,7 @@ class GameManager extends Actor {
     this.win = false;
     this.chrono = 0;
     this.map = map;
+    this.mouse = { leftDown: false, rightDown: false, bothDown: false };
   }
 
   update(delta: number) {
@@ -45,7 +47,35 @@ class GameManager extends Actor {
     event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
     position?: Point,
   ): void {
-    this.map.mouseEvent(event, position);
+    if (event === 'Leftdown') {
+      this.mouse.leftDown = true;
+      this.mouse.bothDown = false;
+      this.map.mouseEvent(event, position);
+    } else if (event === 'Rightdown') {
+      this.mouse.rightDown = true;
+      this.mouse.bothDown = false;
+      this.map.mouseEvent(event, position);
+    } else if (event === 'Leftup') {
+      this.mouse.leftDown = false;
+      this.map.mouseEvent(event, position);
+      if (!this.mouse.rightDown) {
+        this.mouse.bothDown = false;
+      }
+    } else if (event === 'Rightup') {
+      this.mouse.rightDown = false;
+      this.map.mouseEvent(event, position);
+      if (!this.mouse.leftDown) {
+        this.mouse.bothDown = false;
+      }
+    } else if (event === 'Bothdown') {
+      this.mouse.leftDown = true;
+      this.mouse.rightDown = true;
+      this.mouse.bothDown = true;
+      this.map.mouseEvent(event, position);
+    } else {
+      this.map.mouseEvent(event, position);
+    }
+    
   }
 
   resetGame() {

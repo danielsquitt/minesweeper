@@ -15,11 +15,7 @@ export default class Map extends Actor {
   sizePxCell: Point; // Size in pixels of cell
   nMines: number;
   map: Array<Array<Cell>>;
-
-  mouse: {
-    leftDown: boolean;
-    rightDown: boolean;
-  };
+  cellOver?: Cell;
 
   constructor(
     position: Point = { x: 0, y: 0 },
@@ -32,7 +28,7 @@ export default class Map extends Actor {
     this.size = sizeN;
     this.sizePx = sizePx;
     this.nMines = nMines;
-    this.mouse = { leftDown: false, rightDown: false };
+    this.cellOver = undefined;
 
     // Map definition
     if ((sizeN.x * sizeN.y) !== 0) {
@@ -148,43 +144,40 @@ export default class Map extends Actor {
   ): void {
     // Event over
     if (Manager.end) return;
-
+    
     if (event === 'Bothdown') {
-      this.mouse.leftDown = true;
-      this.mouse.rightDown = true;
-      let cellOver ;
-      for (const cell of array2dIterator(this.map)) {
-        if (cell.over) cellOver = cell;
-      }
-      if(!cellOver) return;
-      for (let cell of cellOver.cells) {
+      if (!this.cellOver) return;
+      for (let cell of this.cellOver.cells) {
         cell.setDownLeft(true, false);
       }
-      
     } else if (event === 'over' && typeOfPoint(position)) {
       const pos = position as Point;
+      this.cellOver = undefined;
       for (const cell of array2dIterator(this.map)) {
         const over = Map.over(cell, pos.x, pos.y)
-        cell.setOver(over, this.mouse.leftDown || this.mouse.rightDown);
+        cell.setOver(over);
+        if(!over) continue;
+        this.cellOver = cell;
+      }
+      if(this.cellOver && Manager.mouse.bothDown){
+        for (let cell of this.cellOver.cells) {
+          cell.setDownLeft(true, false);
+        }
       }
       // Event mouse left down
     } else if (event === 'Leftdown') {
-      this.mouse.leftDown = true;
-      for (const cell of array2dIterator(this.map)) {
-        cell.setDownLeft(true);
+      if(this.cellOver){
+        (this.cellOver as Cell).setDownLeft(true);
       }
     } else if (event === 'Leftup') {
-      this.mouse.leftDown = false;
       for (const cell of array2dIterator(this.map)) {
         cell.setDownLeft(false);
       }
     } else if (event === 'Rightdown') {
-      this.mouse.rightDown = true;
       for (const cell of array2dIterator(this.map)) {
         cell.setDownRigth(true);
       }
     } else if (event === 'Rightup') {
-      this.mouse.rightDown = false;
       for (const cell of array2dIterator(this.map)) {
         cell.setDownRigth(false);
       }

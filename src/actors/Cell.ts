@@ -122,8 +122,21 @@ export default class Cell extends Actor {
     }
   }
 
+  onDiscoverSurround(){
+    // Count flags arround
+    const flags = this.cells.reduce((acc, e) => e.flag ? ++acc : acc, 0)
+    if(flags === this.number && flags){
+      for (let cell of this.cells) {
+        if(!cell.flag) cell.onDiscover();
+      }
+      
+    }
+  }
+
   onDiscover() {
+    this.change = true;
     this.discovered = true;
+    this.down = false;
     if (this.number === 0 && !this.bomb) {
       for (let i = 0; i < this.cells.length; i++) {
         if (!this.cells[i].discovered)
@@ -132,25 +145,37 @@ export default class Cell extends Actor {
     }
     Manager.setStart();
   }
-  setOver = (state: boolean, mouseDown: boolean = false) => {
+  setOver = (state: boolean) => {
     this.change = true;
     this.over = state;
     if (!state) this.down = false;
-    if (state && mouseDown) this.down = true;
+    if (state && (Manager.mouse.leftDown || Manager.mouse.rightDown)) this.down = true;
   };
   setDownLeft = (state: boolean, checkOver: boolean = true): void => {
     this.change = true;
-    if (!this.over && checkOver || this.flag) return;
-    this.down = state;
-    if (!this.flag && !state) this.onDiscover();
+    if (state) {
+      //Left down
+      if ((this.over || !checkOver) && !this.flag)
+        this.down = true;
+    } else {
+      //Left up
+      if (this.over && !this.flag && !this.discovered && !Manager.mouse.bothDown) this.onDiscover();
+      if (this.over && this.discovered && Manager.mouse.bothDown) this.onDiscoverSurround();
+      this.down = false;
+    }
   };
   setDownRigth = (state: boolean): void => {
     this.change = true;
-    if (!this.over) return;
-    this.down = state;
-    if (!state) {
-      this.flag = !this.flag;
-      Manager.setFlag(this.flag);
+    if(state){
+      // Right down
+      if(this.over) this.down = true;
+    } else {
+      // Right up
+      if (this.over && !this.discovered && !Manager.mouse.bothDown) {
+        this.flag = !this.flag
+        Manager.setFlag(this.flag );
+      };
+      this.down = false;
     }
   };
   setBomb() {
