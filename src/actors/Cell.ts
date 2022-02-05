@@ -1,6 +1,6 @@
 import { Manager } from '../state/GameManager';
 import { Point } from '../types/Point';
-import {Actor} from './Actor';
+import { Actor } from './Actor';
 
 const imgTileUndiscover = require('../../assets/img/Cell.png');
 const imgTileUndiscoverOver = require('../../assets/img/CellOver.png');
@@ -38,7 +38,7 @@ export default class Cell extends Actor {
   discovered: boolean;
   // Others
   change: boolean;
-  iterator: Generator<Cell, void, undefined> | undefined;
+  cells: Array<Cell>
   // Images
   img_undiscover: HTMLImageElement;
   img_undiscoverOver: HTMLImageElement;
@@ -51,7 +51,7 @@ export default class Cell extends Actor {
   img_revealedMine: HTMLImageElement;
   img_flaggedWrong: HTMLImageElement;
 
-  constructor(initialPos: Point, size: Point, iterator?: Generator<Cell, void, undefined>) {
+  constructor(initialPos: Point, size: Point, iterator?: any) {
     super(initialPos);
     this.size = size;
     this.flag = false;
@@ -82,7 +82,7 @@ export default class Cell extends Actor {
     this.img_revealedMine.src = imgTileRevealedMine;
     this.img_flaggedWrong = new Image();
     this.img_flaggedWrong.src = imgTileFlaggedWrong;
-    if (iterator) { this.iterator = iterator; }
+    this.cells = [];
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -124,23 +124,23 @@ export default class Cell extends Actor {
 
   onDiscover() {
     this.discovered = true;
-    if (this.number === 0 && !this.bomb && this.iterator) {
-      for (const cell of this.iterator) {
-        cell.onDiscover();
+    if (this.number === 0 && !this.bomb) {
+      for (let i = 0; i < this.cells.length; i++) {
+        if (!this.cells[i].discovered)
+          this.cells[i].onDiscover();
       }
     }
     Manager.setStart();
   }
-
-  setOver = (state: boolean, mouseDown: boolean = false): void => {
+  setOver = (state: boolean, mouseDown: boolean = false) => {
     this.change = true;
     this.over = state;
     if (!state) this.down = false;
     if (state && mouseDown) this.down = true;
   };
-  setDownLeft = (state: boolean): void => {
+  setDownLeft = (state: boolean, checkOver: boolean = true): void => {
     this.change = true;
-    if (!this.over || this.flag) return;
+    if (!this.over && checkOver || this.flag) return;
     this.down = state;
     if (!this.flag && !state) this.onDiscover();
   };

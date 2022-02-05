@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
-import {Actor} from './Actor';
+import { Actor } from './Actor';
 import Cell from './Cell';
 import {
   array2dIterator,
@@ -70,6 +70,15 @@ export default class Map extends Actor {
       }
     }
 
+    // Set surround
+    for (let i = 0; i < map.length; i++) {
+      for (let j = 0; j < map[i].length; j++) {
+        for (const cellSurround of array2dSurroundIterator(map, i, j)) {
+          map[i][j].cells.push(cellSurround)
+        }
+      }
+    }
+
     // Set bombs
     for (let i = 0; i < this.nMines; i++) {
       while (true) {
@@ -85,11 +94,12 @@ export default class Map extends Actor {
         }
       }
     }
-    console.log(map.map((e) => e.map((u) => (u.bomb ? '1' : '0'))));
+    //console.log(map.map((e) => e.map((u) => (u.bomb ? '1' : '0'))));
+    console.log(map);
     return map;
   }
 
-  resetMap(sizeN: Point = this.size, nMines: number = this.nMines):void {
+  resetMap(sizeN: Point = this.size, nMines: number = this.nMines): void {
     if (nMines / (sizeN.x * sizeN.y) > 0.3) {
       throw new Error(
         `Error: Bomb density ${nMines / (sizeN.x * sizeN.y)} is bigger than ${0.3}`,
@@ -109,7 +119,7 @@ export default class Map extends Actor {
     }
   }
 
-  checkMap():'win' | 'lose' | undefined {
+  checkMap(): 'win' | 'lose' | undefined {
     // Check win
     let win = true;
     for (const cell of array2dIterator(this.map)) {
@@ -124,6 +134,13 @@ export default class Map extends Actor {
     return undefined;
   }
 
+  static over(cell: Cell, x: number, y: number): boolean {
+    return x >= cell.position.x
+      && x <= cell.position.x + cell.size.x
+      && y >= cell.position.y
+      && y <= cell.position.y + cell.size.y;
+  }
+
   // Mouse event
   mouseEvent(
     event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
@@ -132,13 +149,22 @@ export default class Map extends Actor {
     // Event over
     if (Manager.end) return;
 
-    if (event === 'over' && typeOfPoint(position)) {
+    if (event === 'Bothdown') {
+      this.mouse.leftDown = true;
+      this.mouse.rightDown = true;
+      let cellOver ;
+      for (const cell of array2dIterator(this.map)) {
+        if (cell.over) cellOver = cell;
+      }
+      if(!cellOver) return;
+      for (let cell of cellOver.cells) {
+        cell.setDownLeft(true, false);
+      }
+      
+    } else if (event === 'over' && typeOfPoint(position)) {
       const pos = position as Point;
       for (const cell of array2dIterator(this.map)) {
-        const over = pos.x >= cell.position.x
-          && pos.x <= cell.position.x + cell.size.x
-          && pos.y >= cell.position.y
-          && pos.y <= cell.position.y + cell.size.y;
+        const over = Map.over(cell, pos.x, pos.y)
         cell.setOver(over, this.mouse.leftDown || this.mouse.rightDown);
       }
       // Event mouse left down
