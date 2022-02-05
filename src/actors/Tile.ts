@@ -1,31 +1,31 @@
-import { Manager } from "../state/GameManager";
-import { Point } from "../types/Point";
-import { Actor } from "./Actor";
+import { Manager } from '../state/GameManager';
+import { Point } from '../types/Point';
+import Actor from './Actor';
 
-const imgTileUndiscover = require("../../assets/img/Cell.png");
-const imgTileUndiscoverOver = require("../../assets/img/CellOver.png");
-const imgTileUndiscoverDown = require("../../assets/img/CellDown.png");
-const imgTileFlag = require("../../assets/img/FlagButton.png");
-const imgTileFlagOver = require("../../assets/img/FlagButtonOver.png");
-const imgTileFlagDown = require("../../assets/img/FlagButtonDown.png");
-const imgTileEmpty = require("../../assets/img/EmptyCell.png");
-const imgTileExplodedMine = require("../../assets/img/ExplodedMineCell.png");
-const imgTileRevealedMine = require("../../assets/img/RevealedMineCell.png");
-const imgTileFlaggedWrong = require("../../assets/img/FlaggedWrongCell.png");
+const imgTileUndiscover = require('../../assets/img/Cell.png');
+const imgTileUndiscoverOver = require('../../assets/img/CellOver.png');
+const imgTileUndiscoverDown = require('../../assets/img/CellDown.png');
+const imgTileFlag = require('../../assets/img/FlagButton.png');
+const imgTileFlagOver = require('../../assets/img/FlagButtonOver.png');
+const imgTileFlagDown = require('../../assets/img/FlagButtonDown.png');
+const imgTileEmpty = require('../../assets/img/EmptyCell.png');
+const imgTileExplodedMine = require('../../assets/img/ExplodedMineCell.png');
+const imgTileRevealedMine = require('../../assets/img/RevealedMineCell.png');
+const imgTileFlaggedWrong = require('../../assets/img/FlaggedWrongCell.png');
 
 const colors = [
-  "#ffffff", // 0 - undefined
-  "#244AFC", // 1 - undefined
-  "#407F07", // 2 - undefined
-  "#E93F33", // 3 - undefined
-  "#0C207E", // 4 - undefined
-  "#811F18", // 5 - undefined
-  "#3A8181", // 6 - undefined
-  "#000000", // 7 - undefined
-  "#808080", // 8 - undefined
+  '#ffffff', // 0 - undefined
+  '#244AFC', // 1 - undefined
+  '#407F07', // 2 - undefined
+  '#E93F33', // 3 - undefined
+  '#0C207E', // 4 - undefined
+  '#811F18', // 5 - undefined
+  '#3A8181', // 6 - undefined
+  '#000000', // 7 - undefined
+  '#808080', // 8 - undefined
 ];
 
-export class Tile extends Actor {
+export default class Tile extends Actor {
   // Dimensinal paramters
   size: Point;
   flag: boolean;
@@ -88,7 +88,7 @@ export class Tile extends Actor {
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
     if (!this.change) return;
-    
+
     this.change = false;
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES
@@ -130,7 +130,7 @@ export class Tile extends Actor {
         cell.onDiscover();
       }
     }
-      Manager.setStart();
+    Manager.setStart();
   }
 
   setOver = (state: boolean, mouseDown: boolean = false): void => {
@@ -150,9 +150,9 @@ export class Tile extends Actor {
     if (!this.over) return;
     this.down = state;
     if (!state) {
-      this.flag = !this.flag
-      Manager.setFlag(this.flag)
-    };
+      this.flag = !this.flag;
+      Manager.setFlag(this.flag);
+    }
   };
   setBomb() {
     this.bomb = true;

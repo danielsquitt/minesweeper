@@ -1,19 +1,18 @@
-/* eslint-disable no-useless-constructor */
-/* eslint-disable no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import { Point } from "../types/Point";
+/* eslint-disable no-unused-vars */
+import { Point } from '../types/Point';
 
 export interface IActor {
-    position: Point;
-    update: (delta: number) => void;
-    draw: (delta: number, ctx: CanvasRenderingContext2D) => void;
-    mouseEvent: (
-      event: Partial<"over" | "Leftdown" | "Rightdown" | "Leftup" | "Rightup" | "Bothdown">,
-      position?: Point
-    ) => void
+  position: Point;
+  update: (delta: number) => void;
+  draw: (delta: number, ctx: CanvasRenderingContext2D) => void;
+  mouseEvent: (
+    event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
+    position?: Point
+  ) => void
 }
 
-export class Actor implements IActor {
+export default class Actor implements IActor {
   position: Point;
 
   constructor(position: Point) {
@@ -25,7 +24,7 @@ export class Actor implements IActor {
   draw(delta: number, ctx: CanvasRenderingContext2D) { }
 
   mouseEvent(
-    event: Partial<"over" | "Leftdown" | "Rightdown" | "Leftup" | "Rightup" | "Bothdown">,
-    position?: Point
-  ): void {}
+    event: Partial<'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown'>,
+    position?: Point,
+  ): void { }
 }

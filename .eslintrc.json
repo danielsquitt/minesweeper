@@ -14,21 +14,16 @@
     "plugins": [
         "@typescript-eslint"
     ],
+    "settings": {
+        "import/extensions": [
+          ".ts"
+        ]
+      },
     "rules": {
-        "import/prefer-default-export": "off",
-        "import/no-unresolved": "off",
-        "import/extensions": "off",
-        "no-console": "off",
-        "quotes": ["error", "double"],
-        "no-shadow": "off",
-        "no-underscore-dangle": "off",
-        "linebreak-style":"off",
         "no-plusplus":"off",
-        "no-unused-vars":"warn",
-        "no-useless-constructor":"warn",
-        "no-empty-function":"warn",
-        "lines-between-class-members":"off",
         "no-restricted-syntax":"off",
-        "no-dupe-class-members":"off",
+        "lines-between-class-members":"off",
+        "import/extensions":"off",
+        "import/no-unresolved": 2
     }
 }
