@@ -1,6 +1,6 @@
 import { IActor } from "./actors/Actor";
-import { Layout } from "./actors/Layout";
-import { Map } from "./actors/Map";
+import Layout from "./actors/Layout";
+import Map from "./actors/Map";
 import { Manager, newManager } from "./state/GameManager";
 
 const def_width = 9;

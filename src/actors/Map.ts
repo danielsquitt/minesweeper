@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
-import { Actor } from './Actor';
-import { Tile } from './Tile';
+import {Actor} from './Actor';
+import Cell from './Cell';
 import {
   array2dIterator,
   array2dNew,
@@ -11,14 +11,10 @@ import { Manager } from '../state/GameManager';
 
 export default class Map extends Actor {
   size: Point; // Size in number of tilles of map
-
   sizePx: Point; // Size in number of tilles of map
-
   sizePxCell: Point; // Size in pixels of cell
-
   nMines: number;
-
-  map: Array<Array<Tile>>;
+  map: Array<Array<Cell>>;
 
   mouse: {
     leftDown: boolean;
@@ -55,22 +51,22 @@ export default class Map extends Actor {
       this.map = this.generateMap();
     } else {
       this.sizePxCell = { x: 0, y: 0 };
-      this.map = array2dNew<Tile>(0, 0);
+      this.map = array2dNew<Cell>(0, 0);
     }
   }
 
   // Generates a map. -1 Mine, 0,...8 No mine
-  generateMap(): Array<Array<Tile>> {
+  generateMap(): Array<Array<Cell>> {
     // Calculate map positionx
     const py = (this.sizePx.y - this.size.y * this.sizePxCell.y) / 2 + this.position.y;
     const px = (this.sizePx.x - this.size.x * this.sizePxCell.x) / 2 + this.position.x;
 
     // Generate an empty map
-    const map: Array<Array<Tile>> = array2dNew<Tile>(this.size.y, this.size.x);
+    const map: Array<Array<Cell>> = array2dNew<Cell>(this.size.y, this.size.x);
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
         const pos: Point = { x: this.sizePxCell.x * j + px, y: this.sizePxCell.y * i + py };
-        map[i][j] = new Tile(pos, this.sizePxCell, array2dSurroundIterator(map, i, j));
+        map[i][j] = new Cell(pos, this.sizePxCell, array2dSurroundIterator(map, i, j));
       }
     }
 
@@ -81,7 +77,7 @@ export default class Map extends Actor {
         const x = _.random(0, this.size.x - 1);
         if (!map[y][x].bomb) {
           // setBomb(map, y_, x_)
-          for (const cell of array2dSurroundIterator<Tile>(map, y, x)) {
+          for (const cell of array2dSurroundIterator<Cell>(map, y, x)) {
             cell.increaseNumber();
           }
           map[y][x].setBomb();

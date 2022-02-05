@@ -64,12 +64,6 @@ export default class NumberBox extends Actor {
         this.position.y,
       );
     }
-    ctx.translate(
-      this.inverted
-        ? this.position.x - 1 * (this.size.y * (1 + SPACING) + this.size.x + 2 * (rad + PAD_H * this.size.y))
-        : this.position.x + this.size.y * (1 + SPACING),
-      this.position.y,
-    );
 
     // Draw Rectangle
     ctx.beginPath();

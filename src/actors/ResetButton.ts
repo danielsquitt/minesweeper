@@ -1,4 +1,4 @@
-import Actor from './Actor';
+import {Actor} from './Actor';
 import { Point, typeOfPoint } from '../types/Point';
 import { Manager } from '../state/GameManager';
 

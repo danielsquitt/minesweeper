@@ -1,6 +1,6 @@
 import { Manager } from '../state/GameManager';
 import { Point } from '../types/Point';
-import Actor from './Actor';
+import {Actor} from './Actor';
 
 const imgTileUndiscover = require('../../assets/img/Cell.png');
 const imgTileUndiscoverOver = require('../../assets/img/CellOver.png');
@@ -25,7 +25,7 @@ const colors = [
   '#808080', // 8 - undefined
 ];
 
-export default class Tile extends Actor {
+export default class Cell extends Actor {
   // Dimensinal paramters
   size: Point;
   flag: boolean;
@@ -38,8 +38,7 @@ export default class Tile extends Actor {
   discovered: boolean;
   // Others
   change: boolean;
-  // eslint-disable-next-line no-use-before-define
-  iterator: Generator<Tile, void, undefined> | undefined;
+  iterator: Generator<Cell, void, undefined> | undefined;
   // Images
   img_undiscover: HTMLImageElement;
   img_undiscoverOver: HTMLImageElement;
@@ -52,7 +51,7 @@ export default class Tile extends Actor {
   img_revealedMine: HTMLImageElement;
   img_flaggedWrong: HTMLImageElement;
 
-  constructor(initialPos: Point, size: Point, iterator?: Generator<Tile, void, undefined>) {
+  constructor(initialPos: Point, size: Point, iterator?: Generator<Cell, void, undefined>) {
     super(initialPos);
     this.size = size;
     this.flag = false;

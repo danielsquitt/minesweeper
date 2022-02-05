@@ -1,6 +1,6 @@
 import { Manager } from '../state/GameManager';
 import { Point } from '../types/Point';
-import Actor from './Actor';
+import {Actor} from './Actor';
 import NumberBox from './NumberBox';
 import ResetButton from './ResetButton';
 

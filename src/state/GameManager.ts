@@ -1,4 +1,4 @@
-import Actor from '../actors/Actor';
+import {Actor} from '../actors/Actor';
 import Map from '../actors/Map';
 import { Point } from '../types/Point';
 

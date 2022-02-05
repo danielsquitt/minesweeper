@@ -12,9 +12,9 @@ export interface IActor {
   ) => void
 }
 
-export default class Actor implements IActor {
+export class Actor implements IActor {
   position: Point;
-
+  
   constructor(position: Point) {
     this.position = position;
   }
@@ -24,7 +24,7 @@ export default class Actor implements IActor {
   draw(delta: number, ctx: CanvasRenderingContext2D) { }
 
   mouseEvent(
-    event: Partial<'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown'>,
+    event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
     position?: Point,
   ): void { }
 }
