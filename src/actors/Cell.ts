@@ -1,4 +1,6 @@
+import { times } from 'lodash';
 import { Manager } from '../state/GameManager';
+import { CallbackOneParameter } from '../types/Callback';
 import { Point } from '../types/Point';
 import { Actor } from './Actor';
 
@@ -34,7 +36,6 @@ export default class Cell extends Actor {
   number: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   over: boolean;
   down: boolean;
-  end: boolean;
   discovered: boolean;
   // Others
   change: boolean;
@@ -60,7 +61,6 @@ export default class Cell extends Actor {
     this.number = 0;
     this.over = false;
     this.down = false;
-    this.end = false;
     this.change = true;
     this.img_undiscover = new Image();
     this.img_undiscover.src = imgTileUndiscover;
@@ -91,9 +91,9 @@ export default class Cell extends Actor {
     this.change = false;
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES
-      if (this.end && this.flag && !this.bomb) {
+      if (Manager.end && this.flag && !this.bomb) {
         ctx.drawImage(this.img_flaggedWrong, 0, 0, this.size.x, this.size.y);
-      } else if (this.end && this.bomb && !this.flag) {
+      } else if (Manager.end && this.bomb && !this.flag) {
         ctx.drawImage(this.img_revealedMine, 0, 0, this.size.x, this.size.y);
       } else if (this.flag) {
         if (this.down) {
@@ -122,14 +122,14 @@ export default class Cell extends Actor {
     }
   }
 
-  onDiscoverSurround(){
+  onDiscoverSurround() {
     // Count flags arround
     const flags = this.cells.reduce((acc, e) => e.flag ? ++acc : acc, 0)
-    if(flags === this.number && flags){
+    if (flags === this.number && flags) {
       for (let cell of this.cells) {
-        if(!cell.flag) cell.onDiscover();
+        if (!cell.flag) cell.onDiscover();
       }
-      
+
     }
   }
 
@@ -145,12 +145,14 @@ export default class Cell extends Actor {
     }
     Manager.setStart();
   }
+
   setOver = (state: boolean) => {
     this.change = true;
     this.over = state;
     if (!state) this.down = false;
     if (state && (Manager.mouse.leftDown || Manager.mouse.rightDown)) this.down = true;
   };
+
   setDownLeft = (state: boolean, checkOver: boolean = true): void => {
     this.change = true;
     if (state) {
@@ -164,23 +166,36 @@ export default class Cell extends Actor {
       this.down = false;
     }
   };
+
   setDownRigth = (state: boolean): void => {
     this.change = true;
-    if(state){
+    if (state) {
       // Right down
-      if(this.over) this.down = true;
+      if (this.over) this.down = true;
     } else {
       // Right up
       if (this.over && !this.discovered && !Manager.mouse.bothDown) {
-        this.flag = !this.flag
-        Manager.setFlag(this.flag );
+        this.setFlag(state => !state)
       };
       this.down = false;
     }
   };
+
+  setFlag(state: CallbackOneParameter<boolean, boolean> | boolean) {
+    let flagOld = this.flag;
+    if (typeof state === 'boolean') {
+      this.flag = state;
+    } else {
+      this.flag = state(this.flag);
+    }
+    if (flagOld != this.flag)
+      Manager.setFlag(this.flag);
+  }
+
   setBomb() {
     this.bomb = true;
   }
+
   increaseNumber() {
     this.number++;
   }

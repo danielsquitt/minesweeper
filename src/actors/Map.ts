@@ -137,6 +137,13 @@ export default class Map extends Actor {
       && y <= cell.position.y + cell.size.y;
   }
 
+  onEnd(win: boolean) {
+    for (const cell of array2dIterator(this.map)) {
+      if (cell.bomb && win)
+        cell.setFlag(true)
+    }
+  }
+
   // Mouse event
   mouseEvent(
     event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
@@ -144,7 +151,7 @@ export default class Map extends Actor {
   ): void {
     // Event over
     if (Manager.end) return;
-    
+
     if (event === 'Bothdown') {
       if (!this.cellOver) return;
       for (let cell of this.cellOver.cells) {
@@ -156,17 +163,17 @@ export default class Map extends Actor {
       for (const cell of array2dIterator(this.map)) {
         const over = Map.over(cell, pos.x, pos.y)
         cell.setOver(over);
-        if(!over) continue;
+        if (!over) continue;
         this.cellOver = cell;
       }
-      if(this.cellOver && Manager.mouse.bothDown){
+      if (this.cellOver && Manager.mouse.bothDown) {
         for (let cell of this.cellOver.cells) {
           cell.setDownLeft(true, false);
         }
       }
       // Event mouse left down
     } else if (event === 'Leftdown') {
-      if(this.cellOver){
+      if (this.cellOver) {
         (this.cellOver as Cell).setDownLeft(true);
       }
     } else if (event === 'Leftup') {

@@ -75,7 +75,7 @@ class GameManager extends Actor {
     } else {
       this.map.mouseEvent(event, position);
     }
-    
+
   }
 
   resetGame() {
@@ -98,7 +98,8 @@ class GameManager extends Actor {
     } else {
       this.flags -= 1;
     }
-    this.updateGameState();
+    if (this.start)
+      this.updateGameState();
   }
 
   updateGameState() {
@@ -107,9 +108,11 @@ class GameManager extends Actor {
       this.end = true;
       this.start = false;
       this.win = true;
+      this.map.onEnd(true)
     } else if (state === 'lose') {
       this.end = true;
       this.start = false;
+      this.map.onEnd(false)
     }
   }
 }
