@@ -1,15 +1,104 @@
-body {
-  max-width: 100vw;
-  max-height: 100vh;
+* {
+  padding: 0;
+  margin: 0;
 }
 
-#canvas-pos {
+body {
+  background-color: #0A1416;
+}
+
+h2, h3{
+  text-indent: 0;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.bg {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+}
+
+.bg-ship {
+  object-fit: cover;
+}
+
+.bg-ocean {
+  object-fit: none;
+}
+
+.container {
+  padding-top: 10%;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: flex-start;
+  justify-content: space-around;
+  flex-wrap: wrap
+}
+
+.mouse-img {
+  display: flex;
+  flex-direction: column;
+}
+
+.instructions {
+  color: white;
+  text-shadow: 0 0 6px black;
+  font-family: Arial;
+  font-size: 22px;
+  text-align: justify;
+  text-indent: 40px;
+  width: 24%;
+  max-width: 300px;
+  height: auto;
+  padding: 15px;
+  order: 1;
+  backdrop-filter: blur(2px);
+}
+
+.canvas-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  order: 1;
+}
+
+@media(max-width: 1600px) {
+  .instructions {
+    order: 2;
+  }
+}
+
+@media(max-width: 1600px) {
+  .canvas-container {
+    flex: 0 0 100%;
+  }
+}
+
+.intr-ing-cont {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.intruction-img {
+  padding: 50px 10px 20px;
+  max-width: 100px;
+  max-height: 100px;
+  -webkit-filter: drop-shadow(0px 0px 10px #222 );
+  filter: drop-shadow(0px 0px 10px #222); 
 }
 
 #canvas {
-  border: 6px solid #2f6367;
+  width: 900px;
+  height: 700px;
 }

@@ -3,9 +3,9 @@ import Layout from "./actors/Layout";
 import Map from "./actors/Map";
 import { Manager, newManager } from "./state/GameManager";
 
-const def_width = 9;
-const def_heigth = 9;
-const def_mines = 5
+const def_width = 30;
+const def_heigth = 20;
+const def_mines = 5;
 
 window.onload = () => {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
