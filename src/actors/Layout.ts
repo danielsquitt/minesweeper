@@ -1,12 +1,10 @@
+import { getImage } from '../resources/images';
 import { Manager } from '../state/GameManager';
 import { Point } from '../types/Point';
 import Actor from './Actor';
 import FPSViewer from './FPS';
 import NumberBox from './NumberBox';
 import ResetButton from './ResetButton';
-
-const imgMineLogo = require('../../assets/img/MineLogo.png');
-const imgTimeLogo = require('../../assets/img/TimeLogo.png');
 
 export default class Layout extends Actor {
   timer: NumberBox;
@@ -20,8 +18,7 @@ export default class Layout extends Actor {
     super({ x: 0, y: 0 });
     this.FPSViewer = new FPSViewer({x:10, y:50});
 
-    const imgMine = new Image();
-    imgMine.src = imgMineLogo;
+    const imgMine = getImage("logo_mine")
     this.mineCnt = new NumberBox(
       { x: ctx.canvas.width * 0.05, y: ctx.canvas.height * 0.10 },
       ctx.canvas.width * 0.05,
@@ -29,8 +26,7 @@ export default class Layout extends Actor {
       3,
       0,
     );
-    const imgTime = new Image();
-    imgTime.src = imgTimeLogo;
+    const imgTime = getImage("logo_time")
     this.timer = new NumberBox(
       { x: ctx.canvas.width * 0.95, y: ctx.canvas.height * 0.10 },
       ctx.canvas.width * 0.05,

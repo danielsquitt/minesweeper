@@ -62,7 +62,7 @@ export default class Map extends Actor {
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
         const pos: Point = { x: this.sizePxCell.x * j + px, y: this.sizePxCell.y * i + py };
-        map[i][j] = new Cell(pos, this.sizePxCell, array2dSurroundIterator(map, i, j));
+        map[i][j] = new Cell(pos, this.sizePxCell);
       }
     }
 

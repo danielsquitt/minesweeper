@@ -2,17 +2,9 @@ import { Manager } from '../state/GameManager';
 import { CallbackOneParameter } from '../types/Callback';
 import { Point } from '../types/Point';
 import Actor  from './Actor';
+import {drawImage} from '../resources/images'
 
-const imgTileUndiscover = require('../../assets/img/Cell.png');
-const imgTileUndiscoverOver = require('../../assets/img/CellOver.png');
-const imgTileUndiscoverDown = require('../../assets/img/CellDown.png');
-const imgTileFlag = require('../../assets/img/FlagButton.png');
-const imgTileFlagOver = require('../../assets/img/FlagButtonOver.png');
-const imgTileFlagDown = require('../../assets/img/FlagButtonDown.png');
-const imgTileEmpty = require('../../assets/img/EmptyCell.png');
-const imgTileExplodedMine = require('../../assets/img/ExplodedMineCell.png');
-const imgTileRevealedMine = require('../../assets/img/RevealedMineCell.png');
-const imgTileFlaggedWrong = require('../../assets/img/FlaggedWrongCell.png');
+ 
 
 const colors = [
   '#ffffff', // 0 - undefined
@@ -39,19 +31,8 @@ export default class Cell extends Actor {
   // Others
   change: boolean;
   cells: Array<Cell>
-  // Images
-  img_undiscover: HTMLImageElement;
-  img_undiscoverOver: HTMLImageElement;
-  img_undiscoverDown: HTMLImageElement;
-  img_flag: HTMLImageElement;
-  img_flagOver: HTMLImageElement;
-  img_flagDown: HTMLImageElement;
-  img_empty: HTMLImageElement;
-  img_explodedMine: HTMLImageElement;
-  img_revealedMine: HTMLImageElement;
-  img_flaggedWrong: HTMLImageElement;
 
-  constructor(initialPos: Point, size: Point, iterator?: any) {
+  constructor(initialPos: Point, size: Point) {
     super(initialPos);
     this.size = size;
     this.flag = false;
@@ -61,26 +42,6 @@ export default class Cell extends Actor {
     this.over = false;
     this.down = false;
     this.change = true;
-    this.img_undiscover = new Image();
-    this.img_undiscover.src = imgTileUndiscover;
-    this.img_undiscoverOver = new Image();
-    this.img_undiscoverOver.src = imgTileUndiscoverOver;
-    this.img_undiscoverDown = new Image();
-    this.img_undiscoverDown.src = imgTileUndiscoverDown;
-    this.img_flag = new Image();
-    this.img_flag.src = imgTileFlag;
-    this.img_flagOver = new Image();
-    this.img_flagOver.src = imgTileFlagOver;
-    this.img_flagDown = new Image();
-    this.img_flagDown.src = imgTileFlagDown;
-    this.img_empty = new Image();
-    this.img_empty.src = imgTileEmpty;
-    this.img_explodedMine = new Image();
-    this.img_explodedMine.src = imgTileExplodedMine;
-    this.img_revealedMine = new Image();
-    this.img_revealedMine.src = imgTileRevealedMine;
-    this.img_flaggedWrong = new Image();
-    this.img_flaggedWrong.src = imgTileFlaggedWrong;
     this.cells = [];
   }
 
@@ -91,28 +52,38 @@ export default class Cell extends Actor {
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES
       if (Manager.end && this.flag && !this.bomb) {
-        ctx.drawImage(this.img_flaggedWrong, 0, 0, this.size.x, this.size.y);
+        // Flaged wrong
+        drawImage(ctx, "cell_flagged_wrong", {x:0, y:0}, this.size)
       } else if (Manager.end && this.bomb && !this.flag) {
-        ctx.drawImage(this.img_revealedMine, 0, 0, this.size.x, this.size.y);
+        // Recealed Mina
+        drawImage(ctx, "cell_revealed_mine", {x:0, y:0}, this.size)
       } else if (this.flag) {
         if (this.down) {
-          ctx.drawImage(this.img_flagDown, 0, 0, this.size.x, this.size.y);
+          // Falg down
+          drawImage(ctx, "cell_flag_down", {x:0, y:0}, this.size)
         } else if (this.over) {
-          ctx.drawImage(this.img_flagOver, 0, 0, this.size.x, this.size.y);
+          // Flag over
+          drawImage(ctx, "cell_flag_over", {x:0, y:0}, this.size)
         } else {
-          ctx.drawImage(this.img_flag, 0, 0, this.size.x, this.size.y);
+          // Falg
+          drawImage(ctx, "cell_flag", {x:0, y:0}, this.size)
         }
       } else if (this.down) {
-        ctx.drawImage(this.img_undiscoverDown, 0, 0, this.size.x, this.size.y);
+        // Undiscover down
+          drawImage(ctx, "cell_undiscover_down", {x:0, y:0}, this.size)
       } else if (this.over) {
-        ctx.drawImage(this.img_undiscoverOver, 0, 0, this.size.x, this.size.y);
+        // Undiscover over
+          drawImage(ctx, "cell_undiscover_over", {x:0, y:0}, this.size)
       } else {
-        ctx.drawImage(this.img_undiscover, 0, 0, this.size.x, this.size.y);
+        // Undiscover
+          drawImage(ctx, "cell_undiscover", {x:0, y:0}, this.size)
       }
     } else if (this.bomb) {
-      ctx.drawImage(this.img_explodedMine, 0, 0, this.size.x, this.size.y);
+      // Exploded mine
+          drawImage(ctx, "cell_exploded_mine", {x:0, y:0}, this.size)
     } else {
-      ctx.drawImage(this.img_empty, 0, 0, this.size.x, this.size.y);
+      // Empty mine
+          drawImage(ctx, "cell_empty", {x:0, y:0}, this.size)
       if (this.number > 0) {
         ctx.font = `${this.size.x * 0.8}px Arial`;
         ctx.fillStyle = colors[this.number];

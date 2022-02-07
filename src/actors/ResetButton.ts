@@ -1,39 +1,16 @@
 import Actor from './Actor';
 import { Point, typeOfPoint } from '../types/Point';
 import { Manager } from '../state/GameManager';
-
-const imgFaceHappy = require('../../assets/img/faceHappy.png');
-const imgFaceWin = require('../../assets/img/faceWin.png');
-const imgFaceLose = require('../../assets/img/faceLose.png');
-const imgButtonDown = require('../../assets/img/buttonDown.png');
+import { getImage } from '../resources/images';
 
 export default class ResetButton extends Actor {
-  img_FaceHappy: HTMLImageElement;
-
-  img_FaceWin: HTMLImageElement;
-
-  img_FaceLose: HTMLImageElement;
-
-  img_ButtonDown: HTMLImageElement;
-
   state: 'happy' | 'win' | 'lose';
-
   size: number;
-
   over: boolean;
-
   down: boolean;
 
   constructor(position: Point, size: number) {
     super(position);
-    this.img_FaceHappy = new Image();
-    this.img_FaceHappy.src = imgFaceHappy;
-    this.img_FaceWin = new Image();
-    this.img_FaceWin.src = imgFaceWin;
-    this.img_FaceLose = new Image();
-    this.img_FaceLose.src = imgFaceLose;
-    this.img_ButtonDown = new Image();
-    this.img_ButtonDown.src = imgButtonDown;
     this.state = 'happy';
     this.size = size;
     this.over = false;
@@ -42,16 +19,17 @@ export default class ResetButton extends Actor {
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
     let img: HTMLImageElement;
+    let img_down: HTMLImageElement = getImage("face_down");
     if (Manager.end && Manager.win) {
-      img = this.img_FaceWin;
+      img = getImage("face_win");
     } else if (Manager.end && !Manager.win) {
-      img = this.img_FaceLose;
+      img = getImage("face_lose");
     } else {
-      img = this.img_FaceHappy;
+      img = getImage("face_happy");
     }
     if (this.down) {
       const pos: Point = { x: this.position.x + this.size * 0.025, y: this.position.y + this.size * 0.025 };
-      ctx.drawImage(this.img_ButtonDown, this.position.x, this.position.y, this.size, this.size);
+      ctx.drawImage(img_down, this.position.x, this.position.y, this.size, this.size);
       ctx.drawImage(img, pos.x, pos.y, this.size * 0.95, this.size * 0.95);
     } else {
       ctx.drawImage(img, this.position.x, this.position.y, this.size, this.size);
