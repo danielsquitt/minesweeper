@@ -1,31 +1,33 @@
-import { Manager } from "../state/GameManager";
-import { Point } from "../types/Point";
-import { Actor } from "./Actor";
+import { times } from 'lodash';
+import { Manager } from '../state/GameManager';
+import { CallbackOneParameter } from '../types/Callback';
+import { Point } from '../types/Point';
+import { Actor } from './Actor';
 
-const imgTileUndiscover = require("../../assets/img/Cell.png");
-const imgTileUndiscoverOver = require("../../assets/img/CellOver.png");
-const imgTileUndiscoverDown = require("../../assets/img/CellDown.png");
-const imgTileFlag = require("../../assets/img/FlagButton.png");
-const imgTileFlagOver = require("../../assets/img/FlagButtonOver.png");
-const imgTileFlagDown = require("../../assets/img/FlagButtonDown.png");
-const imgTileEmpty = require("../../assets/img/EmptyCell.png");
-const imgTileExplodedMine = require("../../assets/img/ExplodedMineCell.png");
-const imgTileRevealedMine = require("../../assets/img/RevealedMineCell.png");
-const imgTileFlaggedWrong = require("../../assets/img/FlaggedWrongCell.png");
+const imgTileUndiscover = require('../../assets/img/Cell.png');
+const imgTileUndiscoverOver = require('../../assets/img/CellOver.png');
+const imgTileUndiscoverDown = require('../../assets/img/CellDown.png');
+const imgTileFlag = require('../../assets/img/FlagButton.png');
+const imgTileFlagOver = require('../../assets/img/FlagButtonOver.png');
+const imgTileFlagDown = require('../../assets/img/FlagButtonDown.png');
+const imgTileEmpty = require('../../assets/img/EmptyCell.png');
+const imgTileExplodedMine = require('../../assets/img/ExplodedMineCell.png');
+const imgTileRevealedMine = require('../../assets/img/RevealedMineCell.png');
+const imgTileFlaggedWrong = require('../../assets/img/FlaggedWrongCell.png');
 
 const colors = [
-  "#ffffff", // 0 - undefined
-  "#244AFC", // 1 - undefined
-  "#407F07", // 2 - undefined
-  "#E93F33", // 3 - undefined
-  "#0C207E", // 4 - undefined
-  "#811F18", // 5 - undefined
-  "#3A8181", // 6 - undefined
-  "#000000", // 7 - undefined
-  "#808080", // 8 - undefined
+  '#ffffff', // 0 - undefined
+  '#244AFC', // 1 - undefined
+  '#407F07', // 2 - undefined
+  '#E93F33', // 3 - undefined
+  '#0C207E', // 4 - undefined
+  '#811F18', // 5 - undefined
+  '#3A8181', // 6 - undefined
+  '#000000', // 7 - undefined
+  '#808080', // 8 - undefined
 ];
 
-export class Tile extends Actor {
+export default class Cell extends Actor {
   // Dimensinal paramters
   size: Point;
   flag: boolean;
@@ -34,12 +36,10 @@ export class Tile extends Actor {
   number: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   over: boolean;
   down: boolean;
-  end: boolean;
   discovered: boolean;
   // Others
   change: boolean;
-  // eslint-disable-next-line no-use-before-define
-  iterator: Generator<Tile, void, undefined> | undefined;
+  cells: Array<Cell>
   // Images
   img_undiscover: HTMLImageElement;
   img_undiscoverOver: HTMLImageElement;
@@ -52,7 +52,7 @@ export class Tile extends Actor {
   img_revealedMine: HTMLImageElement;
   img_flaggedWrong: HTMLImageElement;
 
-  constructor(initialPos: Point, size: Point, iterator?: Generator<Tile, void, undefined>) {
+  constructor(initialPos: Point, size: Point, iterator?: any) {
     super(initialPos);
     this.size = size;
     this.flag = false;
@@ -61,7 +61,6 @@ export class Tile extends Actor {
     this.number = 0;
     this.over = false;
     this.down = false;
-    this.end = false;
     this.change = true;
     this.img_undiscover = new Image();
     this.img_undiscover.src = imgTileUndiscover;
@@ -83,18 +82,18 @@ export class Tile extends Actor {
     this.img_revealedMine.src = imgTileRevealedMine;
     this.img_flaggedWrong = new Image();
     this.img_flaggedWrong.src = imgTileFlaggedWrong;
-    if (iterator) { this.iterator = iterator; }
+    this.cells = [];
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
     if (!this.change) return;
-    
+
     this.change = false;
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES
-      if (this.end && this.flag && !this.bomb) {
+      if (Manager.end && this.flag && !this.bomb) {
         ctx.drawImage(this.img_flaggedWrong, 0, 0, this.size.x, this.size.y);
-      } else if (this.end && this.bomb && !this.flag) {
+      } else if (Manager.end && this.bomb && !this.flag) {
         ctx.drawImage(this.img_revealedMine, 0, 0, this.size.x, this.size.y);
       } else if (this.flag) {
         if (this.down) {
@@ -123,40 +122,80 @@ export class Tile extends Actor {
     }
   }
 
-  onDiscover() {
-    this.discovered = true;
-    if (this.number === 0 && !this.bomb && this.iterator) {
-      for (const cell of this.iterator) {
-        cell.onDiscover();
+  onDiscoverSurround() {
+    // Count flags arround
+    const flags = this.cells.reduce((acc, e) => e.flag ? ++acc : acc, 0)
+    if (flags === this.number && flags) {
+      for (let cell of this.cells) {
+        if (!cell.flag) cell.onDiscover();
       }
+
     }
-      Manager.setStart();
   }
 
-  setOver = (state: boolean, mouseDown: boolean = false): void => {
+  onDiscover() {
+    this.change = true;
+    this.discovered = true;
+    this.down = false;
+    if (this.number === 0 && !this.bomb) {
+      for (let i = 0; i < this.cells.length; i++) {
+        if (!this.cells[i].discovered)
+          this.cells[i].onDiscover();
+      }
+    }
+    Manager.setStart();
+  }
+
+  setOver = (state: boolean) => {
     this.change = true;
     this.over = state;
     if (!state) this.down = false;
-    if (state && mouseDown) this.down = true;
+    if (state && (Manager.mouse.leftDown || Manager.mouse.rightDown)) this.down = true;
   };
-  setDownLeft = (state: boolean): void => {
+
+  setDownLeft = (state: boolean, checkOver: boolean = true): void => {
     this.change = true;
-    if (!this.over || this.flag) return;
-    this.down = state;
-    if (!this.flag && !state) this.onDiscover();
+    if (state) {
+      //Left down
+      if ((this.over || !checkOver) && !this.flag)
+        this.down = true;
+    } else {
+      //Left up
+      if (this.over && !this.flag && !this.discovered && !Manager.mouse.bothDown) this.onDiscover();
+      if (this.over && this.discovered && Manager.mouse.bothDown) this.onDiscoverSurround();
+      this.down = false;
+    }
   };
+
   setDownRigth = (state: boolean): void => {
     this.change = true;
-    if (!this.over) return;
-    this.down = state;
-    if (!state) {
-      this.flag = !this.flag
-      Manager.setFlag(this.flag)
-    };
+    if (state) {
+      // Right down
+      if (this.over) this.down = true;
+    } else {
+      // Right up
+      if (this.over && !this.discovered && !Manager.mouse.bothDown) {
+        this.setFlag(state => !state)
+      };
+      this.down = false;
+    }
   };
+
+  setFlag(state: CallbackOneParameter<boolean, boolean> | boolean) {
+    let flagOld = this.flag;
+    if (typeof state === 'boolean') {
+      this.flag = state;
+    } else {
+      this.flag = state(this.flag);
+    }
+    if (flagOld != this.flag)
+      Manager.setFlag(this.flag);
+  }
+
   setBomb() {
     this.bomb = true;
   }
+
   increaseNumber() {
     this.number++;
   }

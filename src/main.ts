@@ -1,6 +1,6 @@
 import { IActor } from "./actors/Actor";
-import { Layout } from "./actors/Layout";
-import { Map } from "./actors/Map";
+import Layout from "./actors/Layout";
+import Map from "./actors/Map";
 import { Manager, newManager } from "./state/GameManager";
 
 const def_width = 9;
@@ -21,7 +21,7 @@ window.onload = () => {
     const delta = (time - lastFrame) / 1000;
     lastFrame = time;
 
-    actors.forEach((e) => {e.update(delta)});
+    actors.forEach((e) => { e.update(delta) });
 
     actors.forEach((e) => {
       ctx.save();
@@ -47,7 +47,11 @@ window.onload = () => {
 
   // Mouse down event
   canvas.addEventListener('mousedown', (e) => {
-    if (e.button == 0)
+    if (e.buttons == 3)
+      actors.forEach((e) => {
+        e.mouseEvent('Bothdown')
+      });
+    else if (e.button == 0)
       actors.forEach((e) => {
         e.mouseEvent('Leftdown')
       });
