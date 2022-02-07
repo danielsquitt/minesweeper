@@ -12,7 +12,7 @@ export interface IActor {
   ) => void
 }
 
-export class Actor implements IActor {
+export default class Actor implements IActor {
   position: Point;
   
   constructor(position: Point) {

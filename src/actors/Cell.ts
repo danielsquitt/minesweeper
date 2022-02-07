@@ -1,8 +1,7 @@
-import { times } from 'lodash';
 import { Manager } from '../state/GameManager';
 import { CallbackOneParameter } from '../types/Callback';
 import { Point } from '../types/Point';
-import { Actor } from './Actor';
+import Actor  from './Actor';
 
 const imgTileUndiscover = require('../../assets/img/Cell.png');
 const imgTileUndiscoverOver = require('../../assets/img/CellOver.png');

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import _ from 'lodash';
 import { Point } from '../types/Point';
-import { Actor } from './Actor';
+import Actor from './Actor';
 
 const RADIUS: number = 0.1; // proportion of heigth
 const SPACING: number = 0.1;
@@ -106,7 +106,6 @@ export default class NumberBox extends Actor {
       rad + PAD_H * this.size.y + offset,
       this.size.y - PAD_VERTICAL * this.size.y,
     );
-    ctx.beginPath();
 
     /* // Debug
         ctx.rect(0, 0, this.size.x + 2 * (rad + PAD_H * this.size.y), this.size.y);

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
-import { Actor } from './Actor';
+import Actor from './Actor';
 import Cell from './Cell';
 import {
   array2dIterator,
@@ -91,7 +91,7 @@ export default class Map extends Actor {
       }
     }
     //console.log(map.map((e) => e.map((u) => (u.bomb ? '1' : '0'))));
-    console.log(map);
+    //console.log(map);
     return map;
   }
 

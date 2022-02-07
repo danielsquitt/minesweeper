@@ -1,6 +1,7 @@
 import { Manager } from '../state/GameManager';
 import { Point } from '../types/Point';
-import {Actor} from './Actor';
+import Actor from './Actor';
+import FPSViewer from './FPS';
 import NumberBox from './NumberBox';
 import ResetButton from './ResetButton';
 
@@ -9,21 +10,20 @@ const imgTimeLogo = require('../../assets/img/TimeLogo.png');
 
 export default class Layout extends Actor {
   timer: NumberBox;
-
   mineCnt: NumberBox;
-
   resetButton: ResetButton;
-
+  FPSViewer :FPSViewer;
   first: boolean;
-
   mapPos: { pos: Point, size: Point };
 
   constructor(ctx: CanvasRenderingContext2D) {
     super({ x: 0, y: 0 });
+    this.FPSViewer = new FPSViewer({x:10, y:50});
+
     const imgMine = new Image();
     imgMine.src = imgMineLogo;
     this.mineCnt = new NumberBox(
-      { x: ctx.canvas.width * 0.05, y: ctx.canvas.height * 0.05 },
+      { x: ctx.canvas.width * 0.05, y: ctx.canvas.height * 0.10 },
       ctx.canvas.width * 0.05,
       imgMine,
       3,
@@ -32,7 +32,7 @@ export default class Layout extends Actor {
     const imgTime = new Image();
     imgTime.src = imgTimeLogo;
     this.timer = new NumberBox(
-      { x: ctx.canvas.width * 0.95, y: ctx.canvas.height * 0.05 },
+      { x: ctx.canvas.width * 0.95, y: ctx.canvas.height * 0.10 },
       ctx.canvas.width * 0.05,
 
       imgTime,
@@ -41,18 +41,18 @@ export default class Layout extends Actor {
       true,
     );
     this.resetButton = new ResetButton(
-      { x: ctx.canvas.width * 0.475, y: ctx.canvas.height * 0.05 },
+      { x: ctx.canvas.width * 0.475, y: ctx.canvas.height * 0.10 },
       ctx.canvas.width * 0.05,
     );
     this.first = true;
     this.mapPos = {
       pos: {
         x: ctx.canvas.width * 0.05,
-        y: ctx.canvas.height * 0.15,
+        y: ctx.canvas.height * 0.20,
       },
       size: {
         x: ctx.canvas.width * 0.9,
-        y: ctx.canvas.height * 0.80,
+        y: ctx.canvas.height * 0.75,
       },
     };
   }
@@ -75,6 +75,14 @@ export default class Layout extends Actor {
       ctx.fill();
       ctx.stroke();
     }
+    ctx.beginPath();
+    ctx.lineWidth = 0;
+    ctx.rect(10, 10, ctx.canvas.width -10, 50);
+    ctx.fillStyle = "fblack";
+    ctx.fill();
+    ctx.stroke();
+
+    this.FPSViewer.draw(delta,ctx);
     this.mineCnt.draw(delta, ctx);
     this.timer.draw(delta, ctx);
     this.resetButton.draw(delta, ctx);
