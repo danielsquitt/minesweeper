@@ -5,7 +5,7 @@ import { Manager, newManager } from "./state/GameManager";
 
 const def_width = 30;
 const def_heigth = 20;
-const def_mines = 50;
+const def_mines = 5;
 
 window.onload = () => {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;

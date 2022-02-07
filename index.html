@@ -10,11 +10,30 @@
     <title>Minesweeper</title>
   </head>
   <body>
-    <canvas
-      id="canvas"
-      width="1600"
-      height="1200"
-      style="width: 800; height: 600px"
-    ></canvas>
+    <img class="bg bg-ocean" src="./public/img/backgound_ocean.jpg" alt="" />
+    <img class="bg bg-ship" src="./public/img/backgound_ship.png" alt="" />
+    <div class="container" id="canvas-container">
+      <div class="instructions">
+        <h2>INSTRUCTIONS</h2>
+        <p>Para ganar, debes abrir todas las celdas que no contienen minas. Al hacer clic en una celda que no tiene una mina, se revela un número. Este número es la cantidad de celdas vecinas que contienen una mina. Con esta información, puedes determinar las celdas que son seguras y las celdas que contienen minas. Las celdas sospechosas de contener minas se pueden marcar con una bandera usando el botón derecho del ratón.</p>
+      </div>
+      <div class="canvas-container">
+        <canvas id="canvas" width="1800px" height="1400px"></canvas>
+      </div>
+      <div class="instructions mouse-img">
+        <div class="intr-ing-cont" >
+          <img class="intruction-img" src="./public/img/Left_click.png" alt="">
+          <h3>DISCOVER CELL</h3>
+        </div>
+        <div class="intr-ing-cont" >
+          <img class="intruction-img" src="./public/img/Right_click.png" alt="">
+          <h3>SET FLAG</h3>
+        </div>
+        <div class="intr-ing-cont" >
+          <img class="intruction-img" src="./public/img/Both_click.png" alt="">
+          <h3>DISCOVER SURROUND CELL</h3>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
