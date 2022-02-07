@@ -4,8 +4,13 @@ import Map from "./actors/Map";
 import { Manager, newManager } from "./state/GameManager";
 
 const def_width = 30;
+<<<<<<< Updated upstream
 const def_heigth = 20;
 const def_mines = 5;
+=======
+const def_heigth = 16;
+const def_mines = 99;
+>>>>>>> Stashed changes
 
 window.onload = () => {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
