@@ -4,7 +4,6 @@
     "target": "ES2019",          
     "lib": ["DOM"],
     "module": "commonjs",
-    "rootDir": "./src",
     "outDir": "./docs",
     "moduleResolution": "node", 
     "esModuleInterop": true,
