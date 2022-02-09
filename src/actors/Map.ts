@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
-import Actor from '../abstractClass/Actor';
+import Actor from '../types/abstractClass/Actor';
 import Cell from './Cell';
 import {
   array2dIterator,
@@ -8,6 +8,7 @@ import {
   array2dSurroundIterator,
 } from '../utils/ArrayIterators';
 import { Manager } from '../state/GameManager';
+import { MouseEvent } from '../types/Mouse';
 
 export default class Map extends Actor {
   size: Point; // Size in number of tilles of map
@@ -146,18 +147,18 @@ export default class Map extends Actor {
 
   // Mouse event
   mouseEvent(
-    event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
+    event: MouseEvent,
     position?: Point,
   ): void {
     // Event over
     if (Manager.end) return;
 
-    if (event === 'Bothdown') {
+    if (event === MouseEvent.BOTHDOWN) {
       if (!this.cellOver) return;
       for (let cell of this.cellOver.cells) {
         cell.setDownLeft(true, false);
       }
-    } else if (event === 'over' && typeOfPoint(position)) {
+    } else if (event === MouseEvent.OVER && typeOfPoint(position)) {
       const pos = position as Point;
       this.cellOver = undefined;
       for (const cell of array2dIterator(this.map)) {
@@ -172,19 +173,19 @@ export default class Map extends Actor {
         }
       }
       // Event mouse left down
-    } else if (event === 'Leftdown') {
+    } else if (event === MouseEvent.LEFT_DOWN) {
       if (this.cellOver) {
         (this.cellOver as Cell).setDownLeft(true);
       }
-    } else if (event === 'Leftup') {
+    } else if (event === MouseEvent.LEFT_UP) {
       for (const cell of array2dIterator(this.map)) {
         cell.setDownLeft(false);
       }
-    } else if (event === 'Rightdown') {
+    } else if (event === MouseEvent.RIGHT_DOWN) {
       for (const cell of array2dIterator(this.map)) {
         cell.setDownRigth(true);
       }
-    } else if (event === 'Rightup') {
+    } else if (event === MouseEvent.RIGHT_UP) {
       for (const cell of array2dIterator(this.map)) {
         cell.setDownRigth(false);
       }

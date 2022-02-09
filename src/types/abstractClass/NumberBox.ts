@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import _ from 'lodash';
-import { Point } from '../types/Point';
+import { Point } from '../Point';
 import Actor from './Actor';
 
 const RADIUS: number = 0.1; // proportion of heigth

@@ -1,10 +1,11 @@
-import { IActor } from "./abstractClass/Actor";
+import { IActor } from "./types/abstractClass/Actor";
 import FPSViewer from "./actors/FPS";
 import Map from "./actors/Map";
 import ResetButton from "./actors/ResetButton";
 import { Manager, newManager } from "./state/GameManager";
 import MineCnt from "./actors/MineCnt";
 import Timer from "./actors/Timer";
+import LevelSelecButton from "./actors/LevelSelecButton";
 
 const def_width = 30;
 const def_heigth = 20;
@@ -18,7 +19,8 @@ window.onload = () => {
 
   // Build actors
   // ---------------------------------------------------------------------------
-  const FPS = new FPSViewer({ x: 10, y: 50 });
+  const FPS = new FPSViewer({ x: 10, y: 50 }, ctx.canvas.height * 0.04);
+  const levelButton = new LevelSelecButton({ x: ctx.canvas.width - 200, y: 50 }, ctx.canvas.height * 0.04)
 
   const mineCnt = new MineCnt(
     { x: ctx.canvas.width * 0.05, y: ctx.canvas.height * 0.10 },
@@ -52,7 +54,7 @@ window.onload = () => {
 
   // Actors Array
   // ---------------------------------------------------------------------------------------------
-  const actors: Array<IActor> = [FPS, mineCnt, timer, resetButton, Manager.map];
+  const actors: Array<IActor> = [FPS, levelButton, mineCnt, timer, resetButton, Manager.map];
 
   // Draw bacground
   // ---------------------------------------------------------------
@@ -82,7 +84,7 @@ window.onload = () => {
     // Header rectangle
     ctx.beginPath();
     ctx.lineWidth = 0;
-    ctx.rect(10, 10, ctx.canvas.width -10, 50);
+    ctx.rect(10, 10, ctx.canvas.width - 10, ctx.canvas.height * 0.04);
     ctx.fillStyle = "black";
     ctx.fill();
     ctx.stroke();

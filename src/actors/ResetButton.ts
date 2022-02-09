@@ -1,7 +1,7 @@
 import { Point } from '../types/Point';
 import { Manager } from '../state/GameManager';
 import { getImage } from '../resources/images';
-import Button from '../abstractClass/Button';
+import Button from '../types/abstractClass/Button';
 
 export default class ResetButton extends Button {
   state: 'happy' | 'win' | 'lose';
@@ -9,6 +9,10 @@ export default class ResetButton extends Button {
   constructor(position: Point, size: number) {
     super(position, size);
     this.state = 'happy';
+  }
+
+  onClick(): void {
+    Manager.resetGame();
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {

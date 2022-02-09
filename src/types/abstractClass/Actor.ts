@@ -1,13 +1,14 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
-import { Point } from '../types/Point';
+import { MouseEvent } from '../Mouse';
+import { Point } from '../Point';
 
 export interface IActor {
   position: Point;
   update: (delta: number) => void;
   draw: (delta: number, ctx: CanvasRenderingContext2D) => void;
   mouseEvent: (
-    event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
+    event: MouseEvent,
     position?: Point
   ) => void
 }
@@ -24,7 +25,7 @@ export default class Actor implements IActor {
   draw(delta: number, ctx: CanvasRenderingContext2D) { }
 
   mouseEvent(
-    event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
+    event: MouseEvent,
     position?: Point,
   ): void { }
 }

@@ -1,7 +1,7 @@
 import { getImage } from "../resources/images";
 import { Manager } from "../state/GameManager";
 import { Point } from "../types/Point";
-import NumberBox from "../abstractClass/NumberBox";
+import NumberBox from "../types/abstractClass/NumberBox";
 
 export default class MineCnt extends NumberBox {
   constructor(position: Point, size: number,){
