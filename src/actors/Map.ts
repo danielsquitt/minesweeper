@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
-import Actor from './Actor';
+import Actor from '../abstractClass/Actor';
 import Cell from './Cell';
 import {
   array2dIterator,

@@ -1,7 +1,7 @@
 import { Manager } from '../state/GameManager';
 import { CallbackOneParameter } from '../types/Callback';
 import { Point } from '../types/Point';
-import Actor  from './Actor';
+import Actor from '../abstractClass/Actor';
 import {drawImage} from '../resources/images'
 
  

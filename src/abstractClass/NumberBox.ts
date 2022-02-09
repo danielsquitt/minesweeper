@@ -40,6 +40,10 @@ export default class NumberBox extends Actor {
     this.inverted = inverted;
   }
 
+  updateValue(value:string): void {
+      this.value = value;
+  }
+
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
     // Calc
     const rad = Math.min(RADIUS * this.size.y, 0.5 * this.size.y);

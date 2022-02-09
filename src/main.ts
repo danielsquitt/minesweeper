@@ -1,20 +1,75 @@
-import { IActor } from "./actors/Actor";
-import Layout from "./actors/Layout";
+import { IActor } from "./abstractClass/Actor";
+import FPSViewer from "./actors/FPS";
 import Map from "./actors/Map";
+import ResetButton from "./actors/ResetButton";
 import { Manager, newManager } from "./state/GameManager";
+import MineCnt from "./actors/MineCnt";
+import Timer from "./actors/Timer";
 
 const def_width = 30;
 const def_heigth = 20;
 const def_mines = 5;
 
 window.onload = () => {
+  // Get canvas elements
+  // --------------------------------------------------------------------------
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-  let layout = new Layout(ctx);
-  newManager(new Map(layout.mapPos.pos, layout.mapPos.size, { x: def_width, y: def_heigth }, def_mines));
+  // Build actors
+  // ---------------------------------------------------------------------------
+  const FPS = new FPSViewer({ x: 10, y: 50 });
 
-  const actors: Array<IActor> = [layout, Manager];
+  const mineCnt = new MineCnt(
+    { x: ctx.canvas.width * 0.05, y: ctx.canvas.height * 0.10 },
+    ctx.canvas.width * 0.05
+  );
+
+  const timer = new Timer(
+    { x: ctx.canvas.width * 0.95, y: ctx.canvas.height * 0.10 },
+    ctx.canvas.width * 0.05
+  );
+
+  const resetButton = new ResetButton(
+    { x: ctx.canvas.width * 0.475, y: ctx.canvas.height * 0.10 },
+    ctx.canvas.width * 0.05,
+  );
+
+  // Start manager
+  // -----------------------------------------------------------------
+  const workspace = {
+    pos: {
+      x: ctx.canvas.width * 0.05,
+      y: ctx.canvas.height * 0.20,
+    },
+    size: {
+      x: ctx.canvas.width * 0.9,
+      y: ctx.canvas.height * 0.75,
+    },
+  };
+
+  newManager(new Map(workspace.pos, workspace.size, { x: def_width, y: def_heigth }, def_mines));
+
+  // Actors Array
+  // ---------------------------------------------------------------------------------------------
+  const actors: Array<IActor> = [FPS, mineCnt, timer, resetButton, Manager.map];
+
+  // Draw bacground
+  // ---------------------------------------------------------------
+  // Draw backgound rectangle
+  ctx.beginPath();
+  ctx.lineWidth = 10;
+  ctx.strokeStyle = 'black';
+  ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.closePath();
+  const clg = ctx.createLinearGradient(0 + 500, 0, ctx.canvas.width - 500, ctx.canvas.height);
+  clg.addColorStop(0, '#919FBA');
+  clg.addColorStop(0.5, '#D1D7E3');
+  clg.addColorStop(1, '#919FBA');
+  ctx.fillStyle = clg;
+  ctx.fill();
+  ctx.stroke();
+
 
   let lastFrame = 0;
   const render = (time: number) => {
@@ -23,9 +78,19 @@ window.onload = () => {
 
     actors.forEach((e) => { e.update(delta) });
 
-    actors.forEach((e) => {
+
+    // Header rectangle
+    ctx.beginPath();
+    ctx.lineWidth = 0;
+    ctx.rect(10, 10, ctx.canvas.width -10, 50);
+    ctx.fillStyle = "black";
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw actors
+    actors.forEach((actor) => {
       ctx.save();
-      e.draw(delta, ctx);
+      actor.draw(delta, ctx);
       ctx.restore();
     });
     window.requestAnimationFrame(render);

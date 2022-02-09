@@ -1,8 +1,7 @@
-import Actor from '../actors/Actor';
 import Map from '../actors/Map';
 import { Point } from '../types/Point';
 
-class GameManager extends Actor {
+class GameManager {
   map: Map; // Current map
 
   start: boolean; // The game is started
@@ -17,8 +16,7 @@ class GameManager extends Actor {
     bothDown: boolean;
   };
 
-  constructor(map: Map, pos: Point = { x: 0, y: 0 }) {
-    super(pos);
+  constructor(map: Map) {
     this.flags = 0;
     this.remanding_mines = map.nMines;
     this.start = false;
@@ -37,10 +35,6 @@ class GameManager extends Actor {
       this.end = true;
       this.start = false;
     }
-  }
-
-  draw(delta: number, ctx: CanvasRenderingContext2D): void {
-    this.map.draw(delta, ctx);
   }
 
   mouseEvent(

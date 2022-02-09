@@ -1,5 +1,5 @@
 import {Point} from '../types/Point';
-import Actor from './Actor';
+import Actor from '../abstractClass/Actor';
 
 export default class FPSViewer extends Actor {
   constructor(position: Point) {

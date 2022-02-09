@@ -19,7 +19,7 @@ export default class Actor implements IActor {
     this.position = position;
   }
 
-  update(delta: number) { }
+  update(delta: number){}
 
   draw(delta: number, ctx: CanvasRenderingContext2D) { }
 
