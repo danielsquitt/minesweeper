@@ -55,7 +55,7 @@ window.onload = () => {
 
   const map = new Map(workspace.pos, workspace.size, { x: def_width, y: def_heigth }, def_mines)
   const levelSelector = new LevelSelector(workspace.pos, workspace.size)
-  newManager(map);
+  newManager(map)
 
   // Actors Array
   // ---------------------------------------------------------------------------------------------

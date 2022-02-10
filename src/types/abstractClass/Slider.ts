@@ -27,10 +27,6 @@ export default class Slider extends Actor {
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
     ctx.translate(this.position.x, this.position.y);
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.rect(0, 0, this.size.x, this.size.y);
-    ctx.stroke();
 
     ctx.beginPath();
     ctx.lineWidth = 0;
@@ -72,7 +68,8 @@ export default class Slider extends Actor {
 
       if (this.down) {
         let pos = position as Point;
-        this.slider_value = (min([max([pos.x, this.position.x]), this.position.x + this.size.x]) - this.position.x) / this.size.x
+        const value = (min([max([pos.x, this.position.x]), this.position.x + this.size.x])) as number;
+        this.slider_value = (value - this.position.x) / this.size.x
         console.log(this.slider_value);
         this.updateSliderPos();
       }

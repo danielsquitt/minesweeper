@@ -1,15 +1,22 @@
 import Actor from "../types/abstractClass/Actor";
-import Slider from "../types/abstractClass/Slider";
 import { MouseEvent } from "../types/Mouse";
 import { Point } from "../types/Point";
+import LevelSelecButtonCancel from "./LevelSelectorButonCancel";
+import LevelSelecButtonAcept from "./LevelSelectorButtonAcept";
+import LevelSelectorSlider from "./LevelSelectorSlider";
+import MineSelectorSlider from "./MineSelectorSlider";
 
 export default class LevelSelector extends Actor {
-  sizeSlider: Slider;
 
+  elements: Array<Actor>;
 
   constructor(position: Point, size: Point) {
     super(position, size);
-    this.sizeSlider = new Slider({ x: size.x * 0.1, y: size.y * 0.3 }, { x: size.x * 0.8, y: size.y * 0.1 });
+    this.elements = [];
+    this.elements.push(new LevelSelectorSlider({ x: size.x * 0.1, y: size.y * 0.1 }, { x: size.x * 0.8, y: size.y * 0.2 }));
+    this.elements.push(new MineSelectorSlider({ x: size.x * 0.1, y: size.y * 0.5 }, { x: size.x * 0.8, y: size.y * 0.2 }));
+    this.elements.push(new LevelSelecButtonCancel({x: size.x*0.05 , y: size.y*0.85 }, {x: 250 , y: size.y*0.07 }))
+    this.elements.push(new LevelSelecButtonAcept({x: size.x*0.82 , y: size.y*0.85 }, {x: 200 , y: size.y*0.07 }))
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -21,15 +28,16 @@ export default class LevelSelector extends Actor {
     ctx.fill();
     ctx.stroke();
 
-    this.sizeSlider.draw(delta, ctx)
+    this.elements.forEach(e => {
+      ctx.save();
+      e.draw(delta, ctx)
+      ctx.restore();
+    })
   }
 
   mouseEvent(event: MouseEvent, position?: Point): void {
-    if(event === MouseEvent.OVER){
-      const pos = position as Point;
-      this.sizeSlider.mouseEvent(event, {x: pos.x - this.position.x, y: pos.y - this.position.y});
-    } else {
-      this.sizeSlider.mouseEvent(event);
-    }
+      let pos = position || {x: 0, y: 0};
+      pos = {x: pos.x - this.position.x, y: pos.y - this.position.y};
+      this.elements.forEach(e => e.mouseEvent(event, pos))
   }
 }
