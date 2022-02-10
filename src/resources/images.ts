@@ -23,12 +23,12 @@ type ImgResource = "cell_undiscover" | "cell_undiscover_over" |
 "logo_mine" | "logo_time" |
 "face_happy" | "face_win" | "face_lose" | "face_down";
 
-type Image = {
+type ImageAsset = {
   name: ImgResource;
   img: HTMLImageElement;
 }
 
-const Images: Array<Image> = []
+const Images: Array<ImageAsset> = []
 
 // Undiscover cell
 let img = new Image();
@@ -164,11 +164,10 @@ Images.push({
 
 
 
-export const getImage = (name: string): HTMLImageElement => {
-  const data =  Images.filter((e: Image) => e.name === name)
+export const getImage = (name: ImgResource): HTMLImageElement => {
+  const data =  Images.filter((e: ImageAsset) => e.name === name)
   if(data[0]) return data[0].img;
   throw new Error(`Image ${name} not found`);
-  
 }
 
 export const drawImage = (ctx:CanvasRenderingContext2D, name:ImgResource, pos: Point, size:Point ) => {

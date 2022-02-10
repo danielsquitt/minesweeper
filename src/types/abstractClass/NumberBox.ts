@@ -14,8 +14,6 @@ const getCharWith = (size: number, nChar: number) => {
 };
 
 export default class NumberBox extends Actor {
-  size: Point;
-
   nChar: number;
 
   img: HTMLImageElement;
@@ -32,8 +30,7 @@ export default class NumberBox extends Actor {
     value: number = 0,
     inverted: boolean = false,
   ) {
-    super(position);
-    this.size = { x: getCharWith(size, maxDigits), y: size };
+    super(position, { x: getCharWith(size, maxDigits), y: size });
     this.img = img;
     this.value = value.toString();
     this.nChar = maxDigits;

@@ -5,6 +5,7 @@ import { Point } from '../Point';
 
 export interface IActor {
   position: Point;
+  size: Point
   update: (delta: number) => void;
   draw: (delta: number, ctx: CanvasRenderingContext2D) => void;
   mouseEvent: (
@@ -15,9 +16,10 @@ export interface IActor {
 
 export default class Actor implements IActor {
   position: Point;
-  
-  constructor(position: Point) {
+  size: Point;
+  constructor(position: Point, size: Point) {
     this.position = position;
+    this.size = size;
   }
 
   update(delta: number){}

@@ -11,7 +11,6 @@ import { Manager } from '../state/GameManager';
 import { MouseEvent } from '../types/Mouse';
 
 export default class Map extends Actor {
-  size: Point; // Size in number of tilles of map
   sizePx: Point; // Size in number of tilles of map
   sizePxCell: Point; // Size in pixels of cell
   nMines: number;
@@ -25,8 +24,7 @@ export default class Map extends Actor {
     nMines: number = 0,
   ) {
     // Super
-    super(position);
-    this.size = sizeN;
+    super(position, sizeN);
     this.sizePx = sizePx;
     this.nMines = nMines;
     this.cellOver = undefined;
@@ -133,9 +131,9 @@ export default class Map extends Actor {
 
   static over(cell: Cell, x: number, y: number): boolean {
     return x >= cell.position.x
-      && x <= cell.position.x + cell.size.x
+      && x < cell.position.x + cell.size.x
       && y >= cell.position.y
-      && y <= cell.position.y + cell.size.y;
+      && y < cell.position.y + cell.size.y;
   }
 
   onEnd(win: boolean) {

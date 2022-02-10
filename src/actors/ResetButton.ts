@@ -6,7 +6,7 @@ import Button from '../types/abstractClass/Button';
 export default class ResetButton extends Button {
   state: 'happy' | 'win' | 'lose';
 
-  constructor(position: Point, size: number) {
+  constructor(position: Point, size: Point) {
     super(position, size);
     this.state = 'happy';
   }
@@ -26,11 +26,11 @@ export default class ResetButton extends Button {
       img = getImage("face_happy");
     }
     if (this.down) {
-      const pos: Point = { x: this.position.x + this.size * 0.025, y: this.position.y + this.size * 0.025 };
-      ctx.drawImage(img_down, this.position.x, this.position.y, this.size, this.size);
-      ctx.drawImage(img, pos.x, pos.y, this.size * 0.95, this.size * 0.95);
+      const pos: Point = { x: this.position.x + this.size.x * 0.025, y: this.position.y + this.size.y * 0.025 };
+      ctx.drawImage(img_down, this.position.x, this.position.y, this.size.x, this.size.y);
+      ctx.drawImage(img, pos.x, pos.y, this.size.x * 0.95, this.size.y * 0.95);
     } else {
-      ctx.drawImage(img, this.position.x, this.position.y, this.size, this.size);
+      ctx.drawImage(img, this.position.x, this.position.y, this.size.x, this.size.y);
     }
   }
 

@@ -3,13 +3,11 @@ import { Point, typeOfPoint } from '../Point';
 import { MouseEvent } from '../Mouse';
 
 export default class Button extends Actor {
-  size: number;
   over: boolean;
   down: boolean;
 
-  constructor(position: Point, size: number) {
-    super(position);
-    this.size = size;
+  constructor(position: Point, size: Point) {
+    super(position, size); 
     this.over = false;
     this.down = false;
   }
@@ -25,9 +23,9 @@ export default class Button extends Actor {
     if (event === MouseEvent.OVER && typeOfPoint(position)) {
       const pos = position as Point;
       const over = pos.x >= this.position.x
-          && pos.x <= this.position.x + this.size
+          && pos.x <= this.position.x + this.size.x
           && pos.y >= this.position.y
-          && pos.y <= this.position.y + this.size;
+          && pos.y <= this.position.y + this.size.y;
       if (over) {
         this.over = true;
       } else {

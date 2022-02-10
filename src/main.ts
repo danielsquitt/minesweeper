@@ -1,11 +1,13 @@
 import { IActor } from "./types/abstractClass/Actor";
-import FPSViewer from "./actors/FPS";
+import FPSViewer from "./actors/FPSViewer";
 import Map from "./actors/Map";
 import ResetButton from "./actors/ResetButton";
 import { Manager, newManager } from "./state/GameManager";
 import MineCnt from "./actors/MineCnt";
 import Timer from "./actors/Timer";
 import LevelSelecButton from "./actors/LevelSelecButton";
+import { MouseEvent } from "./types/Mouse";
+import LevelSelector from "./actors/LevelSelector";
 
 const def_width = 30;
 const def_heigth = 20;
@@ -16,11 +18,12 @@ window.onload = () => {
   // --------------------------------------------------------------------------
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = canvas.getContext("2d") as CanvasRenderingContext2D;
+  const cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
 
   // Build actors
   // ---------------------------------------------------------------------------
-  const FPS = new FPSViewer({ x: 10, y: 50 }, ctx.canvas.height * 0.04);
-  const levelButton = new LevelSelecButton({ x: ctx.canvas.width - 200, y: 50 }, ctx.canvas.height * 0.04)
+  const FPS = new FPSViewer({ x: 10, y: 0 }, {x: ctx.canvas.height * 0.04, y:ctx.canvas.height * 0.04});
+  const levelButton = new LevelSelecButton({ x: ctx.canvas.width - 200, y: 0 }, {x: 200, y: ctx.canvas.height * 0.04})
 
   const mineCnt = new MineCnt(
     { x: ctx.canvas.width * 0.05, y: ctx.canvas.height * 0.10 },
@@ -34,7 +37,7 @@ window.onload = () => {
 
   const resetButton = new ResetButton(
     { x: ctx.canvas.width * 0.475, y: ctx.canvas.height * 0.10 },
-    ctx.canvas.width * 0.05,
+    {x: ctx.canvas.width * 0.05, y: ctx.canvas.width * 0.05}
   );
 
   // Start manager
@@ -50,11 +53,13 @@ window.onload = () => {
     },
   };
 
-  newManager(new Map(workspace.pos, workspace.size, { x: def_width, y: def_heigth }, def_mines));
+  const map = new Map(workspace.pos, workspace.size, { x: def_width, y: def_heigth }, def_mines)
+  const levelSelector = new LevelSelector(workspace.pos, workspace.size)
+  newManager(map);
 
   // Actors Array
   // ---------------------------------------------------------------------------------------------
-  const actors: Array<IActor> = [FPS, levelButton, mineCnt, timer, resetButton, Manager.map];
+  const actors: Array<IActor> = [FPS, levelButton, mineCnt, timer, resetButton, levelSelector];
 
   // Draw bacground
   // ---------------------------------------------------------------
@@ -80,7 +85,6 @@ window.onload = () => {
 
     actors.forEach((e) => { e.update(delta) });
 
-
     // Header rectangle
     ctx.beginPath();
     ctx.lineWidth = 0;
@@ -104,11 +108,10 @@ window.onload = () => {
 
   // Mouse over event
   canvas.addEventListener("mousemove", function (e) {
-    let cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
     let x = Math.round(e.clientX - cRect.left) * 2;  // Subtract the 'left' of the canvas 
     let y = Math.round(e.clientY - cRect.top) * 2;   // from the X/Y positions to make  
     actors.forEach((e) => {
-      e.mouseEvent('over', { x, y })
+      e.mouseEvent(MouseEvent.OVER, { x, y })
     });
   });
 
@@ -116,15 +119,15 @@ window.onload = () => {
   canvas.addEventListener('mousedown', (e) => {
     if (e.buttons == 3)
       actors.forEach((e) => {
-        e.mouseEvent('Bothdown')
+        e.mouseEvent(MouseEvent.BOTHDOWN)
       });
     else if (e.button == 0)
       actors.forEach((e) => {
-        e.mouseEvent('Leftdown')
+        e.mouseEvent(MouseEvent.LEFT_DOWN)
       });
     else if (e.button == 2)
       actors.forEach((e) => {
-        e.mouseEvent('Rightdown')
+        e.mouseEvent(MouseEvent.RIGHT_DOWN)
       });
   })
 
@@ -132,11 +135,11 @@ window.onload = () => {
   canvas.addEventListener('mouseup', (e) => {
     if (e.button == 0)
       actors.forEach((e) => {
-        e.mouseEvent('Leftup')
+        e.mouseEvent(MouseEvent.LEFT_UP)
       });
     else if (e.button == 2)
       actors.forEach((e) => {
-        e.mouseEvent('Rightup')
+        e.mouseEvent(MouseEvent.RIGHT_UP)
       });
   })
 

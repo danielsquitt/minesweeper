@@ -2,9 +2,9 @@ import { Manager } from '../state/GameManager';
 import { CallbackOneParameter } from '../types/Callback';
 import { Point } from '../types/Point';
 import Actor from '../types/abstractClass/Actor';
-import {drawImage} from '../resources/images'
+import { drawImage } from '../resources/Images'
 
- 
+
 
 const colors = [
   '#ffffff', // 0 - undefined
@@ -20,7 +20,6 @@ const colors = [
 
 export default class Cell extends Actor {
   // Dimensinal paramters
-  size: Point;
   flag: boolean;
   // State parameters
   bomb: boolean;
@@ -33,8 +32,7 @@ export default class Cell extends Actor {
   cells: Array<Cell>
 
   constructor(initialPos: Point, size: Point) {
-    super(initialPos);
-    this.size = size;
+    super(initialPos, size);
     this.flag = false;
     this.discovered = false;
     this.bomb = false;
@@ -53,37 +51,37 @@ export default class Cell extends Actor {
     if (!this.discovered) { // UNDICOVER TILES
       if (Manager.end && this.flag && !this.bomb) {
         // Flaged wrong
-        drawImage(ctx, "cell_flagged_wrong", {x:0, y:0}, this.size)
+        drawImage(ctx, "cell_flagged_wrong", { x: 0, y: 0 }, this.size)
       } else if (Manager.end && this.bomb && !this.flag) {
         // Recealed Mina
-        drawImage(ctx, "cell_revealed_mine", {x:0, y:0}, this.size)
+        drawImage(ctx, "cell_revealed_mine", { x: 0, y: 0 }, this.size)
       } else if (this.flag) {
         if (this.down) {
           // Falg down
-          drawImage(ctx, "cell_flag_down", {x:0, y:0}, this.size)
+          drawImage(ctx, "cell_flag_down", { x: 0, y: 0 }, this.size)
         } else if (this.over) {
           // Flag over
-          drawImage(ctx, "cell_flag_over", {x:0, y:0}, this.size)
+          drawImage(ctx, "cell_flag_over", { x: 0, y: 0 }, this.size)
         } else {
           // Falg
-          drawImage(ctx, "cell_flag", {x:0, y:0}, this.size)
+          drawImage(ctx, "cell_flag", { x: 0, y: 0 }, this.size)
         }
       } else if (this.down) {
         // Undiscover down
-          drawImage(ctx, "cell_undiscover_down", {x:0, y:0}, this.size)
+        drawImage(ctx, "cell_undiscover_down", { x: 0, y: 0 }, this.size)
       } else if (this.over) {
         // Undiscover over
-          drawImage(ctx, "cell_undiscover_over", {x:0, y:0}, this.size)
+        drawImage(ctx, "cell_undiscover_over", { x: 0, y: 0 }, this.size)
       } else {
         // Undiscover
-          drawImage(ctx, "cell_undiscover", {x:0, y:0}, this.size)
+        drawImage(ctx, "cell_undiscover", { x: 0, y: 0 }, this.size)
       }
     } else if (this.bomb) {
       // Exploded mine
-          drawImage(ctx, "cell_exploded_mine", {x:0, y:0}, this.size)
+      drawImage(ctx, "cell_exploded_mine", { x: 0, y: 0 }, this.size)
     } else {
       // Empty mine
-          drawImage(ctx, "cell_empty", {x:0, y:0}, this.size)
+      drawImage(ctx, "cell_empty", { x: 0, y: 0 }, this.size)
       if (this.number > 0) {
         ctx.font = `${this.size.x * 0.8}px Arial`;
         ctx.fillStyle = colors[this.number];
