@@ -1,6 +1,6 @@
 import { Point } from '../types/Point';
 import { Manager } from '../state/GameManager';
-import { getImage } from '../resources/images';
+import { getImage } from '../resources/Images';
 import Button from '../types/abstractClass/Button';
 
 export default class ResetButton extends Button {

@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import _ from 'lodash';
+import { getCharWith } from '../../utils/utils';
 import { Point } from '../Point';
 import Actor from './Actor';
 
@@ -7,11 +8,6 @@ const RADIUS: number = 0.1; // proportion of heigth
 const SPACING: number = 0.1;
 const PAD_H: number = 0.1;
 const PAD_VERTICAL: number = 0.1;
-
-const getCharWith = (size: number, nChar: number) => {
-  const result = size * 0.63 * nChar + 0.008 * size * (nChar - 1);
-  return result;
-};
 
 export default class NumberBox extends Actor {
   nChar: number;

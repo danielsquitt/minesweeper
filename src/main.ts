@@ -93,6 +93,11 @@ window.onload = () => {
     ctx.fill();
     ctx.stroke();
 
+    // Update actors
+    actors.forEach((actor) => {
+      actor.update(delta);
+    });
+
     // Draw actors
     actors.forEach((actor) => {
       ctx.save();

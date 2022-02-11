@@ -1,4 +1,4 @@
-import { getImage } from "../resources/images";
+import { getImage } from "../resources/Images";
 import { Manager } from "../state/GameManager";
 import { Point } from "../types/Point";
 import NumberBox from "../types/abstractClass/NumberBox";
