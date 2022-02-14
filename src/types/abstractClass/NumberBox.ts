@@ -1,6 +1,6 @@
-/* eslint-disable max-len */
-import _ from 'lodash';
-import { Point } from '../types/Point';
+/* eslint-disable import/no-unresolved */
+import { getCharWith } from '../../utils/utils';
+import { Point } from '../Point';
 import Actor from './Actor';
 
 const RADIUS: number = 0.1; // proportion of heigth
@@ -8,14 +8,7 @@ const SPACING: number = 0.1;
 const PAD_H: number = 0.1;
 const PAD_VERTICAL: number = 0.1;
 
-const getCharWith = (size: number, nChar: number) => {
-  const result = size * 0.63 * nChar + 0.008 * size * (nChar - 1);
-  return result;
-};
-
 export default class NumberBox extends Actor {
-  size: Point;
-
   nChar: number;
 
   img: HTMLImageElement;
@@ -32,12 +25,15 @@ export default class NumberBox extends Actor {
     value: number = 0,
     inverted: boolean = false,
   ) {
-    super(position);
-    this.size = { x: getCharWith(size, maxDigits), y: size };
+    super(position, { x: getCharWith(size, maxDigits), y: size });
     this.img = img;
     this.value = value.toString();
     this.nChar = maxDigits;
     this.inverted = inverted;
+  }
+
+  updateValue(value:string): void {
+    this.value = value;
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -55,6 +51,7 @@ export default class NumberBox extends Actor {
     ctx.save();
     if (this.inverted) {
       ctx.translate(
+        // eslint-disable-next-line max-len
         this.position.x - 1 * (this.size.y * (1 + SPACING) + this.size.x + 2 * (rad + PAD_H * this.size.y)),
         this.position.y,
       );

@@ -1,10 +1,9 @@
+/* eslint-disable import/no-unresolved */
 import { Manager } from '../state/GameManager';
 import { CallbackOneParameter } from '../types/Callback';
 import { Point } from '../types/Point';
-import Actor  from './Actor';
-import {drawImage} from '../resources/images'
-
- 
+import Actor from '../types/abstractClass/Actor';
+import { drawImage } from '../resources/Images';
 
 const colors = [
   '#ffffff', // 0 - undefined
@@ -20,7 +19,6 @@ const colors = [
 
 export default class Cell extends Actor {
   // Dimensinal paramters
-  size: Point;
   flag: boolean;
   // State parameters
   bomb: boolean;
@@ -28,62 +26,56 @@ export default class Cell extends Actor {
   over: boolean;
   down: boolean;
   discovered: boolean;
-  // Others
-  change: boolean;
-  cells: Array<Cell>
+  // eslint-disable-next-line no-use-before-define
+  cells: Array<Cell>;
 
   constructor(initialPos: Point, size: Point) {
-    super(initialPos);
-    this.size = size;
+    super(initialPos, size);
     this.flag = false;
     this.discovered = false;
     this.bomb = false;
     this.number = 0;
     this.over = false;
     this.down = false;
-    this.change = true;
     this.cells = [];
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
-    if (!this.change) return;
-
-    this.change = false;
     ctx.translate(this.position.x, this.position.y);
     if (!this.discovered) { // UNDICOVER TILES
       if (Manager.end && this.flag && !this.bomb) {
         // Flaged wrong
-        drawImage(ctx, "cell_flagged_wrong", {x:0, y:0}, this.size)
+        drawImage(ctx, 'cell_flagged_wrong', { x: 0, y: 0 }, this.size);
       } else if (Manager.end && this.bomb && !this.flag) {
         // Recealed Mina
-        drawImage(ctx, "cell_revealed_mine", {x:0, y:0}, this.size)
+        drawImage(ctx, 'cell_revealed_mine', { x: 0, y: 0 }, this.size);
       } else if (this.flag) {
         if (this.down) {
           // Falg down
-          drawImage(ctx, "cell_flag_down", {x:0, y:0}, this.size)
+          drawImage(ctx, 'cell_flag_down', { x: 0, y: 0 }, this.size);
         } else if (this.over) {
           // Flag over
-          drawImage(ctx, "cell_flag_over", {x:0, y:0}, this.size)
+          drawImage(ctx, 'cell_flag_over', { x: 0, y: 0 }, this.size);
         } else {
           // Falg
-          drawImage(ctx, "cell_flag", {x:0, y:0}, this.size)
+          drawImage(ctx, 'cell_flag', { x: 0, y: 0 }, this.size);
         }
       } else if (this.down) {
         // Undiscover down
-          drawImage(ctx, "cell_undiscover_down", {x:0, y:0}, this.size)
+        drawImage(ctx, 'cell_undiscover_down', { x: 0, y: 0 }, this.size);
       } else if (this.over) {
         // Undiscover over
-          drawImage(ctx, "cell_undiscover_over", {x:0, y:0}, this.size)
+        drawImage(ctx, 'cell_undiscover_over', { x: 0, y: 0 }, this.size);
       } else {
         // Undiscover
-          drawImage(ctx, "cell_undiscover", {x:0, y:0}, this.size)
+        drawImage(ctx, 'cell_undiscover', { x: 0, y: 0 }, this.size);
       }
     } else if (this.bomb) {
       // Exploded mine
-          drawImage(ctx, "cell_exploded_mine", {x:0, y:0}, this.size)
+      drawImage(ctx, 'cell_exploded_mine', { x: 0, y: 0 }, this.size);
     } else {
       // Empty mine
-          drawImage(ctx, "cell_empty", {x:0, y:0}, this.size)
+      drawImage(ctx, 'cell_empty', { x: 0, y: 0 }, this.size);
       if (this.number > 0) {
         ctx.font = `${this.size.x * 0.8}px Arial`;
         ctx.fillStyle = colors[this.number];
@@ -94,43 +86,37 @@ export default class Cell extends Actor {
 
   onDiscoverSurround() {
     // Count flags arround
-    const flags = this.cells.reduce((acc, e) => e.flag ? ++acc : acc, 0)
+    const flags = this.cells.reduce((acc, e) => (e.flag ? ++acc : acc), 0);
     if (flags === this.number && flags) {
-      for (let cell of this.cells) {
+      for (const cell of this.cells) {
         if (!cell.flag) cell.onDiscover();
       }
-
     }
   }
 
   onDiscover() {
-    this.change = true;
     this.discovered = true;
     this.down = false;
     if (this.number === 0 && !this.bomb) {
       for (let i = 0; i < this.cells.length; i++) {
-        if (!this.cells[i].discovered)
-          this.cells[i].onDiscover();
+        if (!this.cells[i].discovered) { this.cells[i].onDiscover(); }
       }
     }
     Manager.setStart();
   }
 
   setOver = (state: boolean) => {
-    this.change = true;
     this.over = state;
     if (!state) this.down = false;
     if (state && (Manager.mouse.leftDown || Manager.mouse.rightDown)) this.down = true;
   };
 
   setDownLeft = (state: boolean, checkOver: boolean = true): void => {
-    this.change = true;
     if (state) {
-      //Left down
-      if ((this.over || !checkOver) && !this.flag)
-        this.down = true;
+      // Left down
+      if ((this.over || !checkOver) && !this.flag) { this.down = true; }
     } else {
-      //Left up
+      // Left up
       if (this.over && !this.flag && !this.discovered && !Manager.mouse.bothDown) this.onDiscover();
       if (this.over && this.discovered && Manager.mouse.bothDown) this.onDiscoverSurround();
       this.down = false;
@@ -138,28 +124,26 @@ export default class Cell extends Actor {
   };
 
   setDownRigth = (state: boolean): void => {
-    this.change = true;
     if (state) {
       // Right down
       if (this.over) this.down = true;
     } else {
       // Right up
       if (this.over && !this.discovered && !Manager.mouse.bothDown) {
-        this.setFlag(state => !state)
-      };
+        this.setFlag((stt) => !stt);
+      }
       this.down = false;
     }
   };
 
   setFlag(state: CallbackOneParameter<boolean, boolean> | boolean) {
-    let flagOld = this.flag;
+    const flagOld = this.flag;
     if (typeof state === 'boolean') {
       this.flag = state;
     } else {
       this.flag = state(this.flag);
     }
-    if (flagOld != this.flag)
-      Manager.setFlag(this.flag);
+    if (flagOld !== this.flag) { Manager.setFlag(this.flag); }
   }
 
   setBomb() {

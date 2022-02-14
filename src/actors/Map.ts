@@ -1,6 +1,7 @@
+/* eslint-disable import/no-unresolved */
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
-import Actor from './Actor';
+import Actor from '../types/abstractClass/Actor';
 import Cell from './Cell';
 import {
   array2dIterator,
@@ -8,9 +9,9 @@ import {
   array2dSurroundIterator,
 } from '../utils/ArrayIterators';
 import { Manager } from '../state/GameManager';
+import { MouseEvent } from '../types/Mouse';
 
 export default class Map extends Actor {
-  size: Point; // Size in number of tilles of map
   sizePx: Point; // Size in number of tilles of map
   sizePxCell: Point; // Size in pixels of cell
   nMines: number;
@@ -24,8 +25,7 @@ export default class Map extends Actor {
     nMines: number = 0,
   ) {
     // Super
-    super(position);
-    this.size = sizeN;
+    super(position, sizeN);
     this.sizePx = sizePx;
     this.nMines = nMines;
     this.cellOver = undefined;
@@ -70,7 +70,7 @@ export default class Map extends Actor {
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
         for (const cellSurround of array2dSurroundIterator(map, i, j)) {
-          map[i][j].cells.push(cellSurround)
+          map[i][j].cells.push(cellSurround);
         }
       }
     }
@@ -90,8 +90,8 @@ export default class Map extends Actor {
         }
       }
     }
-    //console.log(map.map((e) => e.map((u) => (u.bomb ? '1' : '0'))));
-    //console.log(map);
+    // console.log(map.map((e) => e.map((u) => (u.bomb ? '1' : '0'))));
+    // console.log(map);
     return map;
   }
 
@@ -103,6 +103,12 @@ export default class Map extends Actor {
     }
     this.size = sizeN;
     this.nMines = nMines;
+    const cellSize = Math.min(
+      Math.floor(this.sizePx.x / sizeN.x),
+      Math.floor(this.sizePx.y / sizeN.y),
+      100,
+    );
+    this.sizePxCell = { x: cellSize, y: cellSize };
     this.map = this.generateMap();
   }
 
@@ -132,59 +138,59 @@ export default class Map extends Actor {
 
   static over(cell: Cell, x: number, y: number): boolean {
     return x >= cell.position.x
-      && x <= cell.position.x + cell.size.x
+      && x < cell.position.x + cell.size.x
       && y >= cell.position.y
-      && y <= cell.position.y + cell.size.y;
+      && y < cell.position.y + cell.size.y;
   }
 
   onEnd(win: boolean) {
     for (const cell of array2dIterator(this.map)) {
-      if (cell.bomb && win)
-        cell.setFlag(true)
+      if (cell.bomb && win) { cell.setFlag(true); }
     }
   }
 
   // Mouse event
   mouseEvent(
-    event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
+    event: MouseEvent,
     position?: Point,
   ): void {
     // Event over
     if (Manager.end) return;
 
-    if (event === 'Bothdown') {
+    if (event === MouseEvent.BOTHDOWN) {
       if (!this.cellOver) return;
-      for (let cell of this.cellOver.cells) {
+      for (const cell of this.cellOver.cells) {
         cell.setDownLeft(true, false);
       }
-    } else if (event === 'over' && typeOfPoint(position)) {
+    } else if (event === MouseEvent.OVER && typeOfPoint(position)) {
       const pos = position as Point;
       this.cellOver = undefined;
       for (const cell of array2dIterator(this.map)) {
-        const over = Map.over(cell, pos.x, pos.y)
+        const over = Map.over(cell, pos.x, pos.y);
         cell.setOver(over);
+        // eslint-disable-next-line no-continue
         if (!over) continue;
         this.cellOver = cell;
       }
       if (this.cellOver && Manager.mouse.bothDown) {
-        for (let cell of this.cellOver.cells) {
+        for (const cell of this.cellOver.cells) {
           cell.setDownLeft(true, false);
         }
       }
       // Event mouse left down
-    } else if (event === 'Leftdown') {
+    } else if (event === MouseEvent.LEFT_DOWN) {
       if (this.cellOver) {
         (this.cellOver as Cell).setDownLeft(true);
       }
-    } else if (event === 'Leftup') {
+    } else if (event === MouseEvent.LEFT_UP) {
       for (const cell of array2dIterator(this.map)) {
         cell.setDownLeft(false);
       }
-    } else if (event === 'Rightdown') {
+    } else if (event === MouseEvent.RIGHT_DOWN) {
       for (const cell of array2dIterator(this.map)) {
         cell.setDownRigth(true);
       }
-    } else if (event === 'Rightup') {
+    } else if (event === MouseEvent.RIGHT_UP) {
       for (const cell of array2dIterator(this.map)) {
         cell.setDownRigth(false);
       }

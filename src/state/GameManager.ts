@@ -1,10 +1,19 @@
-import Actor from '../actors/Actor';
+/* eslint-disable import/no-unresolved */
+import LevelSelector from '../actors/LevelSelector';
 import Map from '../actors/Map';
+import { IActor } from '../types/abstractClass/Actor';
+import { MouseEvent } from '../types/Mouse';
 import { Point } from '../types/Point';
 
-class GameManager extends Actor {
-  map: Map; // Current map
+export enum StateManager {
+  LEVEL_SELECTOR,
+  PLAY
+}
 
+class GameManager implements IActor {
+  map: Map; // Current map
+  levelSelector: LevelSelector;
+  state: StateManager;
   start: boolean; // The game is started
   end: boolean;
   win: boolean;
@@ -17,8 +26,7 @@ class GameManager extends Actor {
     bothDown: boolean;
   };
 
-  constructor(map: Map, pos: Point = { x: 0, y: 0 }) {
-    super(pos);
+  constructor(map: Map, levelSelector: LevelSelector) {
     this.flags = 0;
     this.remanding_mines = map.nMines;
     this.start = false;
@@ -26,7 +34,9 @@ class GameManager extends Actor {
     this.win = false;
     this.chrono = 0;
     this.map = map;
+    this.levelSelector = levelSelector;
     this.mouse = { leftDown: false, rightDown: false, bothDown: false };
+    this.state = StateManager.LEVEL_SELECTOR;
   }
 
   update(delta: number) {
@@ -37,54 +47,84 @@ class GameManager extends Actor {
       this.end = true;
       this.start = false;
     }
+    if (this.state === StateManager.LEVEL_SELECTOR) {
+      this.levelSelector.update();
+    }
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
-    this.map.draw(delta, ctx);
+    switch (this.state) {
+      case StateManager.LEVEL_SELECTOR:
+        this.levelSelector.draw(delta, ctx);
+        break;
+      case StateManager.PLAY:
+        this.map.draw(delta, ctx);
+        break;
+      default:
+        break;
+    }
   }
 
   mouseEvent(
-    event: 'over' | 'Leftdown' | 'Rightdown' | 'Leftup' | 'Rightup' | 'Bothdown',
+    event: MouseEvent,
     position?: Point,
   ): void {
-    if (event === 'Leftdown') {
-      this.mouse.leftDown = true;
-      this.mouse.bothDown = false;
-      this.map.mouseEvent(event, position);
-    } else if (event === 'Rightdown') {
-      this.mouse.rightDown = true;
-      this.mouse.bothDown = false;
-      this.map.mouseEvent(event, position);
-    } else if (event === 'Leftup') {
-      this.mouse.leftDown = false;
-      this.map.mouseEvent(event, position);
-      if (!this.mouse.rightDown) {
+    switch (event) {
+      case MouseEvent.LEFT_DOWN:
+        this.mouse.leftDown = true;
         this.mouse.bothDown = false;
-      }
-    } else if (event === 'Rightup') {
-      this.mouse.rightDown = false;
-      this.map.mouseEvent(event, position);
-      if (!this.mouse.leftDown) {
+        break;
+      case MouseEvent.RIGHT_DOWN:
+        this.mouse.rightDown = true;
         this.mouse.bothDown = false;
-      }
-    } else if (event === 'Bothdown') {
-      this.mouse.leftDown = true;
-      this.mouse.rightDown = true;
-      this.mouse.bothDown = true;
-      this.map.mouseEvent(event, position);
-    } else {
-      this.map.mouseEvent(event, position);
+        break;
+      case MouseEvent.LEFT_UP:
+        this.mouse.leftDown = false;
+        break;
+      case MouseEvent.RIGHT_UP:
+        this.mouse.rightDown = false;
+        break;
+      case MouseEvent.BOTHDOWN:
+        this.mouse.leftDown = true;
+        this.mouse.rightDown = true;
+        this.mouse.bothDown = true;
+        break;
+      default:
+        break;
     }
-
+    switch (this.state) {
+      case StateManager.LEVEL_SELECTOR:
+        this.levelSelector.mouseEvent(event, position);
+        break;
+      case StateManager.PLAY:
+        this.map.mouseEvent(event, position);
+        break;
+      default:
+        break;
+    }
+    switch (event) {
+      case MouseEvent.LEFT_UP:
+        if (!this.mouse.rightDown) {
+          this.mouse.bothDown = false;
+        }
+        break;
+      case MouseEvent.RIGHT_UP:
+        if (!this.mouse.leftDown) {
+          this.mouse.bothDown = false;
+        }
+        break;
+      default:
+        break;
+    }
   }
 
-  resetGame() {
+  resetGame(sizeN?: Point, nMines?: number) {
     this.start = false;
     this.end = false;
     this.win = false;
     this.chrono = 0;
     this.flags = 0;
-    this.map.resetMap();
+    this.map.resetMap(sizeN, nMines);
   }
 
   setStart() {
@@ -98,8 +138,11 @@ class GameManager extends Actor {
     } else {
       this.flags -= 1;
     }
-    if (this.start)
-      this.updateGameState();
+    if (this.start) { this.updateGameState(); }
+  }
+
+  SetState(state:StateManager) {
+    this.state = state;
   }
 
   updateGameState() {
@@ -108,11 +151,11 @@ class GameManager extends Actor {
       this.end = true;
       this.start = false;
       this.win = true;
-      this.map.onEnd(true)
+      this.map.onEnd(true);
     } else if (state === 'lose') {
       this.end = true;
       this.start = false;
-      this.map.onEnd(false)
+      this.map.onEnd(false);
     }
   }
 }
@@ -120,6 +163,6 @@ class GameManager extends Actor {
 // eslint-disable-next-line import/no-mutable-exports
 export let Manager: GameManager;
 
-export const newManager = (map: Map): void => {
-  Manager = new GameManager(map);
+export const newManager = (map: Map, levelSelector: LevelSelector): void => {
+  Manager = new GameManager(map, levelSelector);
 };
