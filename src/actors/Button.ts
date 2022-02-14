@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
-import Actor from './Actor';
-import { Point, typeOfPoint } from '../Point';
-import { MouseEvent } from '../Mouse';
+import Actor from '../types/Actor';
+import { Point, typeOfPoint } from '../types/Point';
+import { MouseEvent } from '../types/Mouse';
 
 export default class Button extends Actor {
   over: boolean;

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
-import { getCharWith } from '../../utils/utils';
-import { Point } from '../Point';
-import Actor from './Actor';
+import { getCharWith } from '../utils/utils';
+import { Point } from '../types/Point';
+import Actor from '../types/Actor';
 
 const RADIUS: number = 0.1; // proportion of heigth
 const SPACING: number = 0.1;
@@ -10,18 +10,17 @@ const PAD_VERTICAL: number = 0.1;
 
 export default class NumberBox extends Actor {
   nChar: number;
-
   img: HTMLImageElement;
-
   value: string;
-
   inverted: boolean;
+  updateValue: ()=>string;
 
   constructor(
     position: Point,
     size: number,
     img: HTMLImageElement,
     maxDigits: number,
+    updateValue: ()=>string,
     value: number = 0,
     inverted: boolean = false,
   ) {
@@ -30,10 +29,11 @@ export default class NumberBox extends Actor {
     this.value = value.toString();
     this.nChar = maxDigits;
     this.inverted = inverted;
+    this.updateValue = updateValue;
   }
 
-  updateValue(value:string): void {
-    this.value = value;
+  update(): void {
+    this.value = this.updateValue();
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -103,19 +103,6 @@ export default class NumberBox extends Actor {
       rad + PAD_H * this.size.y + offset,
       this.size.y - PAD_VERTICAL * this.size.y,
     );
-
-    /* // Debug
-        ctx.rect(0, 0, this.size.x + 2 * (rad + PAD_H * this.size.y), this.size.y);
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "black";
-        ctx.stroke();
-
-        // Debug
-        ctx.rect(rad + PAD_H * this.size.y, 0, this.size.x, this.size.y);
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "black";
-        ctx.stroke(); */
-
     ctx.restore();
   }
 }

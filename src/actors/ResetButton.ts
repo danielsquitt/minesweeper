@@ -2,7 +2,7 @@
 import { Point } from '../types/Point';
 import { Manager } from '../state/GameManager';
 import { getImage } from '../resources/images';
-import Button from '../types/abstractClass/Button';
+import Button from './Button';
 
 export default class ResetButton extends Button {
   state: 'happy' | 'win' | 'lose';

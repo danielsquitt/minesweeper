@@ -1,15 +1,15 @@
 /* eslint-disable import/no-unresolved */
-import { IActor } from './types/abstractClass/Actor';
+import { IActor } from './types/Actor';
 import FPSViewer from './actors/FPSViewer';
 import Map from './actors/Map';
 import ResetButton from './actors/ResetButton';
 import { Manager, newManager, StateManager } from './state/GameManager';
-import MineCnt from './actors/MineCnt';
-import Timer from './actors/Timer';
 import { MouseEvent } from './types/Mouse';
 import LevelSelector from './actors/LevelSelector';
 import { DEF_HEIGTH, DEF_MINES, DEF_WIDTH } from './config';
-import Button from './types/abstractClass/Button';
+import Button from './actors/Button';
+import NumberBox from './actors/NumberBox';
+import { getImage } from './resources/images';
 
 window.onload = () => {
   // Get canvas elements
@@ -33,14 +33,22 @@ window.onload = () => {
     },
   );
 
-  const mineCnt = new MineCnt(
+  const mineCnt = new NumberBox(
     { x: ctx.canvas.width * 0.05, y: ctx.canvas.height * 0.10 },
     ctx.canvas.width * 0.05,
+    getImage('logo_mine'),
+    3,
+    () => (Manager.map.nMines - Manager.flags).toString(),
   );
 
-  const timer = new Timer(
+  const timer = new NumberBox(
     { x: ctx.canvas.width * 0.95, y: ctx.canvas.height * 0.10 },
     ctx.canvas.width * 0.05,
+    getImage('logo_time'),
+    3,
+    () => Manager.chrono.toFixed(0),
+    0,
+    true,
   );
 
   const resetButton = new ResetButton(

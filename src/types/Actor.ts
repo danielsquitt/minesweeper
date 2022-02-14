@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unresolved */
-import { MouseEvent } from '../Mouse';
-import { Point } from '../Point';
+import { MouseEvent } from './Mouse';
+import { Point } from './Point';
 
 export interface IActor {
   update: (delta: number) => void;

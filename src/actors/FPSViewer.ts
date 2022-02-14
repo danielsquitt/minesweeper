@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import Actor from '../types/abstractClass/Actor';
+import Actor from '../types/Actor';
 
 export default class FPSViewer extends Actor {
   draw(delta: number, ctx: CanvasRenderingContext2D) {

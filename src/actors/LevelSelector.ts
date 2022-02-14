@@ -7,8 +7,8 @@ import {
   MAX_HEIGTH, MAX_MINE_RATIO, MAX_WIDTH, MIN_HEIGTH, MIN_MINE_RATIO, MIN_WIDTH,
 } from '../config';
 import { Manager, StateManager } from '../state/GameManager';
-import Actor from '../types/abstractClass/Actor';
-import Button from '../types/abstractClass/Button';
+import Actor from '../types/Actor';
+import Button from './Button';
 import { MouseEvent } from '../types/Mouse';
 import { Point } from '../types/Point';
 import InputSlider from './InputSlider';

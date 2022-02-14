@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import LevelSelector from '../actors/LevelSelector';
 import Map from '../actors/Map';
-import { IActor } from '../types/abstractClass/Actor';
+import { IActor } from '../types/Actor';
 import { MouseEvent } from '../types/Mouse';
 import { Point } from '../types/Point';
 

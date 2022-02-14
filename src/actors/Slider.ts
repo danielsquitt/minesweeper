@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 import { max, min } from 'lodash';
-import { MouseEvent } from '../Mouse';
-import { Point } from '../Point';
-import Actor from './Actor';
+import { MouseEvent } from '../types/Mouse';
+import { Point } from '../types/Point';
+import Actor from '../types/Actor';
 
 export default class Slider extends Actor {
   slider_p1?: Point;

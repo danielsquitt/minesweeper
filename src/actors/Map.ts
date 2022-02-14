@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
-import Actor from '../types/abstractClass/Actor';
+import Actor from '../types/Actor';
 import Cell from './Cell';
 import {
   array2dIterator,

@@ -2,7 +2,7 @@
 import { Manager } from '../state/GameManager';
 import { CallbackOneParameter } from '../types/Callback';
 import { Point } from '../types/Point';
-import Actor from '../types/abstractClass/Actor';
+import Actor from '../types/Actor';
 import { drawImage } from '../resources/images';
 
 const colors = [

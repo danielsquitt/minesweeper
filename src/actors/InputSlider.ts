@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
-import Actor from '../types/abstractClass/Actor';
-import Slider from '../types/abstractClass/Slider';
+import Actor from '../types/Actor';
+import Slider from './Slider';
 import { MouseEvent } from '../types/Mouse';
 import { Point } from '../types/Point';
 
