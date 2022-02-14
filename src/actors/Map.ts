@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import _ from 'lodash';
 import { Point, typeOfPoint } from '../types/Point';
 import Actor from '../types/abstractClass/Actor';
@@ -69,7 +70,7 @@ export default class Map extends Actor {
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
         for (const cellSurround of array2dSurroundIterator(map, i, j)) {
-          map[i][j].cells.push(cellSurround)
+          map[i][j].cells.push(cellSurround);
         }
       }
     }
@@ -89,8 +90,8 @@ export default class Map extends Actor {
         }
       }
     }
-    //console.log(map.map((e) => e.map((u) => (u.bomb ? '1' : '0'))));
-    //console.log(map);
+    // console.log(map.map((e) => e.map((u) => (u.bomb ? '1' : '0'))));
+    // console.log(map);
     return map;
   }
 
@@ -102,6 +103,12 @@ export default class Map extends Actor {
     }
     this.size = sizeN;
     this.nMines = nMines;
+    const cellSize = Math.min(
+      Math.floor(this.sizePx.x / sizeN.x),
+      Math.floor(this.sizePx.y / sizeN.y),
+      100,
+    );
+    this.sizePxCell = { x: cellSize, y: cellSize };
     this.map = this.generateMap();
   }
 
@@ -138,8 +145,7 @@ export default class Map extends Actor {
 
   onEnd(win: boolean) {
     for (const cell of array2dIterator(this.map)) {
-      if (cell.bomb && win)
-        cell.setFlag(true)
+      if (cell.bomb && win) { cell.setFlag(true); }
     }
   }
 
@@ -153,20 +159,21 @@ export default class Map extends Actor {
 
     if (event === MouseEvent.BOTHDOWN) {
       if (!this.cellOver) return;
-      for (let cell of this.cellOver.cells) {
+      for (const cell of this.cellOver.cells) {
         cell.setDownLeft(true, false);
       }
     } else if (event === MouseEvent.OVER && typeOfPoint(position)) {
       const pos = position as Point;
       this.cellOver = undefined;
       for (const cell of array2dIterator(this.map)) {
-        const over = Map.over(cell, pos.x, pos.y)
+        const over = Map.over(cell, pos.x, pos.y);
         cell.setOver(over);
+        // eslint-disable-next-line no-continue
         if (!over) continue;
         this.cellOver = cell;
       }
       if (this.cellOver && Manager.mouse.bothDown) {
-        for (let cell of this.cellOver.cells) {
+        for (const cell of this.cellOver.cells) {
           cell.setDownLeft(true, false);
         }
       }

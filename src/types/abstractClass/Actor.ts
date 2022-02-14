@@ -1,11 +1,9 @@
-/* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
+/* eslint-disable import/no-unresolved */
 import { MouseEvent } from '../Mouse';
 import { Point } from '../Point';
 
 export interface IActor {
-  position: Point;
-  size: Point
   update: (delta: number) => void;
   draw: (delta: number, ctx: CanvasRenderingContext2D) => void;
   mouseEvent: (
@@ -22,7 +20,7 @@ export default class Actor implements IActor {
     this.size = size;
   }
 
-  update(delta: number){}
+  update(delta: number) {}
 
   draw(delta: number, ctx: CanvasRenderingContext2D) { }
 

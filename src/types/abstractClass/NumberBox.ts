@@ -1,5 +1,4 @@
-/* eslint-disable max-len */
-import _ from 'lodash';
+/* eslint-disable import/no-unresolved */
 import { getCharWith } from '../../utils/utils';
 import { Point } from '../Point';
 import Actor from './Actor';
@@ -34,7 +33,7 @@ export default class NumberBox extends Actor {
   }
 
   updateValue(value:string): void {
-      this.value = value;
+    this.value = value;
   }
 
   draw(delta: number, ctx: CanvasRenderingContext2D): void {
@@ -52,6 +51,7 @@ export default class NumberBox extends Actor {
     ctx.save();
     if (this.inverted) {
       ctx.translate(
+        // eslint-disable-next-line max-len
         this.position.x - 1 * (this.size.y * (1 + SPACING) + this.size.x + 2 * (rad + PAD_H * this.size.y)),
         this.position.y,
       );

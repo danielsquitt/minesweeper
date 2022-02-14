@@ -1,13 +1,8 @@
-import {Point} from '../types/Point';
+/* eslint-disable import/no-unresolved */
 import Actor from '../types/abstractClass/Actor';
 
 export default class FPSViewer extends Actor {
-  constructor(position: Point, size: Point) {
-    super(position, size); 
-  }
-
   draw(delta: number, ctx: CanvasRenderingContext2D) {
-    
     const fps = (1 / delta).toFixed(2);
     ctx.font = `${this.size.y}px Arial`;
     ctx.fillStyle = 'white';

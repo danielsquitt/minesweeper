@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import Actor from './Actor';
 import { Point, typeOfPoint } from '../Point';
 import { MouseEvent } from '../Mouse';
@@ -5,14 +6,24 @@ import { MouseEvent } from '../Mouse';
 export default class Button extends Actor {
   over: boolean;
   down: boolean;
+  label: string;
+  color: string;
+  onClick: () => void;
 
-  constructor(position: Point, size: Point) {
-    super(position, size); 
+  constructor(position: Point, size: Point, label: string, color: string, onClick: () => void) {
+    super(position, size);
     this.over = false;
     this.down = false;
+    this.label = label;
+    this.color = color;
+    this.onClick = onClick;
   }
 
-  onClick(){}
+  draw(delta: number, ctx: CanvasRenderingContext2D): void {
+    ctx.font = `${this.size.y}px Arial`;
+    ctx.fillStyle = 'white';
+    ctx.fillText(`${this.label}`, this.position.x, this.position.y + this.size.y);
+  }
 
   // Mouse event
   mouseEvent(
@@ -41,6 +52,7 @@ export default class Button extends Actor {
     } else if (event === MouseEvent.LEFT_UP) {
       if (this.over) {
         this.down = false;
+        this.over = false;
         this.onClick();
       }
     }
