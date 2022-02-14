@@ -20,6 +20,7 @@
     "import/extensions": "off",
     "no-param-reassign": "off",
     "import/no-unresolved": 2,
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "linebreak-style": "off"
   }
 }
