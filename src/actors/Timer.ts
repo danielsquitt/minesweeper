@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { getImage } from '../resources/Images';
+import { getImage } from '../resources/images';
 import { Manager } from '../state/GameManager';
 import { Point } from '../types/Point';
 import NumberBox from '../types/abstractClass/NumberBox';

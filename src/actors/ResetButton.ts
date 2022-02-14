@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import { Point } from '../types/Point';
 import { Manager } from '../state/GameManager';
-import { getImage } from '../resources/Images';
+import { getImage } from '../resources/images';
 import Button from '../types/abstractClass/Button';
 
 export default class ResetButton extends Button {
