@@ -46,7 +46,7 @@ export default class LevelSelector extends Actor {
       'Accept',
       'black',
       () => {
-        Manager.SetState(StateManager.PLAY);
+        Manager.setState(StateManager.PLAY);
         Manager.resetGame({ x: this.boarWidth, y: this.boarHeigth }, this.nMines);
       },
     );
@@ -62,7 +62,7 @@ export default class LevelSelector extends Actor {
       'Cancel',
       'black',
       () => {
-        Manager.SetState(StateManager.PLAY);
+        Manager.setState(StateManager.PLAY);
       },
     );
   }

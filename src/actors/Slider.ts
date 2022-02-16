@@ -7,7 +7,7 @@ import Actor from '../types/Actor';
 export default class Slider extends Actor {
   slider_p1?: Point;
   slider_p2?: Point;
-  slider_value;
+  slider_value: number;
   over: boolean;
   down: boolean;
 

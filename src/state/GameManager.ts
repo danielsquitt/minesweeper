@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
 /* eslint-disable import/no-unresolved */
 import LevelSelector from '../actors/LevelSelector';
 import Map from '../actors/Map';
@@ -10,6 +12,12 @@ export enum StateManager {
   PLAY
 }
 
+type MouseButtonsState = {
+  leftDown: boolean;
+    rightDown: boolean;
+    bothDown: boolean;
+}
+
 class GameManager implements IActor {
   map: Map; // Current map
   levelSelector: LevelSelector;
@@ -20,11 +28,7 @@ class GameManager implements IActor {
   flags: number;
   chrono: number;
   remanding_mines: number;
-  mouse: {
-    leftDown: boolean;
-    rightDown: boolean;
-    bothDown: boolean;
-  };
+  mouse: MouseButtonsState;
 
   constructor(map: Map, levelSelector: LevelSelector) {
     this.flags = 0;
@@ -141,7 +145,7 @@ class GameManager implements IActor {
     if (this.start) { this.updateGameState(); }
   }
 
-  SetState(state:StateManager) {
+  setState(state:StateManager) {
     this.state = state;
   }
 

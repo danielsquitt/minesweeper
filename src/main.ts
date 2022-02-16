@@ -29,7 +29,7 @@ window.onload = () => {
     'Level',
     'white',
     () => {
-      Manager.SetState(StateManager.LEVEL_SELECTOR);
+      Manager.setState(StateManager.LEVEL_SELECTOR);
     },
   );
 
